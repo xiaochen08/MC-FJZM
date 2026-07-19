@@ -257,6 +257,35 @@
     }
     .flow-step p { margin: var(--space-3) 0 0; color: var(--muted); font-size: 14px; }
 
+    .promo-gallery {
+      display: grid;
+      gap: var(--space-6);
+    }
+    .promo-figure {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .promo-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: oklch(12% 0.015 235);
+    }
+    .promo-figure figcaption {
+      display: flex;
+      gap: var(--space-3);
+      align-items: baseline;
+      padding: var(--space-3) var(--space-4);
+    }
+    .promo-figure figcaption strong {
+      color: var(--accent);
+      font-family: var(--mono-font);
+      font-size: 14px;
+    }
+    .promo-figure figcaption span { color: var(--muted); }
+
     .callout {
       margin: var(--space-5) 0;
       padding: var(--space-4);
@@ -453,6 +482,7 @@
       <div class="nav-group">
         <p class="nav-title">先看这里</p>
         <a class="nav-link is-active" href="#start">它到底强在哪</a>
+        <a class="nav-link" href="#showcase">正式图片展示</a>
         <a class="nav-link" href="#workflow">四步看懂流程</a>
         <a class="nav-link" href="#examples">三个真实例子</a>
         <a class="nav-link" href="#orbit">动画为什么会翻车</a>
@@ -500,6 +530,38 @@
           <div class="callout">
             <strong>✅ 必须遵守的确认门</strong>
             “还可以”“差不多”都不算批准。只有“我选择 B，按 B 开始正式建模”这类明确说法才算。
+          </div>
+        </section>
+
+        <section id="showcase">
+          <p class="eyebrow">Official showcase</p>
+          <h2>六张正式宣传图</h2>
+          <p>从模型本体、确认流程、Blockbench 对照、系统联动到最终交付，按正式顺序完整展示。</p>
+          <div class="promo-gallery">
+            <figure class="promo-figure">
+              <img src="assets/promo/01-model-showcase.png" alt="水晶能量塔多个视角与结构展示" width="1672" height="941">
+              <figcaption><strong>01</strong><span>水晶能量塔模型展示</span></figcaption>
+            </figure>
+            <figure class="promo-figure">
+              <img src="assets/promo/02-official-hero.png" alt="方界造模官方主视觉" width="1672" height="941" loading="lazy">
+              <figcaption><strong>02</strong><span>方界造模官方主视觉</span></figcaption>
+            </figure>
+            <figure class="promo-figure">
+              <img src="assets/promo/03-approval-workflow.png" alt="需求问诊、三套方案和用户确认流程" width="1672" height="941" loading="lazy">
+              <figcaption><strong>03</strong><span>先确认，再生产</span></figcaption>
+            </figure>
+            <figure class="promo-figure">
+              <img src="assets/promo/04-blockbench-comparison.png" alt="概念图与 Blockbench 实际成果对照" width="1672" height="941" loading="lazy">
+              <figcaption><strong>04</strong><span>概念图与 Blockbench 成果对照</span></figcaption>
+            </figure>
+            <figure class="promo-figure">
+              <img src="assets/promo/05-system-integration.png" alt="模型、动画、粒子、音效和 Mod 联动" width="1672" height="941" loading="lazy">
+              <figcaption><strong>05</strong><span>模型、动画、粒子、音效与 Mod 联动</span></figcaption>
+            </figure>
+            <figure class="promo-figure">
+              <img src="assets/promo/06-asset-workspace.png" alt="一个模型一个独立工作区和完整交付结构" width="1672" height="941" loading="lazy">
+              <figcaption><strong>06</strong><span>一个模型，一个独立工作区</span></figcaption>
+            </figure>
           </div>
         </section>
 
@@ -625,6 +687,7 @@
     <aside class="right-toc" data-od-id="docs-right-toc" aria-label="本页目录">
       <p class="toc-title">本页内容</p>
       <a class="toc-link is-active" href="#start">它到底强在哪</a>
+      <a class="toc-link" href="#showcase">正式图片展示</a>
       <a class="toc-link" href="#workflow">四步流程</a>
       <a class="toc-link" href="#examples">三个例子</a>
       <a class="toc-link" href="#orbit">动画示意</a>

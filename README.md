@@ -6,6 +6,34 @@
 
 ---
 
+## 正式展示
+
+### 01 · 模型展示
+
+![水晶能量塔模型展示](docs/assets/promo/01-model-showcase.png)
+
+### 02 · 官方主视觉
+
+![方界造模官方主视觉](docs/assets/promo/02-official-hero.png)
+
+### 03 · 先确认，再生产
+
+![需求问诊、三套方案与用户确认流程](docs/assets/promo/03-approval-workflow.png)
+
+### 04 · 概念图与 Blockbench 成果
+
+![概念图与 Blockbench 成果对照](docs/assets/promo/04-blockbench-comparison.png)
+
+### 05 · 模型、动画、粒子、音效与 Mod 联动
+
+![模型动画粒子音效与 Mod 联动](docs/assets/promo/05-system-integration.png)
+
+### 06 · 一个模型，一个独立工作区
+
+![模型独立工作区与交付结构](docs/assets/promo/06-asset-workspace.png)
+
+---
+
 ## 这个 Skill 到底强在哪？
 
 说大白话：你负责说想法和做选择，Skill 负责把问题问清楚、先给你看方案、再去建模。
@@ -124,10 +152,7 @@ Blockbench 建模、贴图、骨骼和动画
 - [📖 新手使用教程](docs/USER_GUIDE.md)
 - [🧭 从想法到交付的完整流程](docs/WORKFLOW.md)
 - [🖥️ 软件、版本和文件要求](docs/ENVIRONMENT.md)
-- [🎨 宣传图生成提示词](docs/IMAGE_PROMPTS.md)
 - [📣 可以直接使用的宣传文案](docs/PROMOTION.md)
-- [✅ 正式发布前检查表](docs/PUBLISHING_CHECKLIST.md)
-- [🖼️ 宣传图片上传说明](assets/promo/README.md)
 
 ## 说明
 
