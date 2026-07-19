@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="方界造模可视化使用说明：从一句想法到 Minecraft Blockbench 模型、动画、音效和 Mod 接入。">
+  <title>方界造模 — 可视化使用说明</title>
+  <style>
+    :root {
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --space-6: 48px;
+      --space-7: 64px;
+      --radius-1: 4px;
+      --radius-2: 8px;
+      --radius-3: 12px;
+      --body-font: "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+      --mono-font: "Cascadia Code", "JetBrains Mono", "Microsoft YaHei UI", monospace;
+      --bg: oklch(97% 0.01 230);
+      --surface: oklch(99% 0.005 230);
+      --surface-2: oklch(93% 0.02 230);
+      --text: oklch(20% 0.025 240);
+      --muted: oklch(48% 0.025 240);
+      --border: oklch(85% 0.025 230);
+      --accent: oklch(55% 0.14 210);
+      --accent-soft: oklch(90% 0.055 210);
+      --warning: oklch(68% 0.12 80);
+      --danger: oklch(58% 0.17 25);
+      --shadow: 0 8px 24px oklch(20% 0.02 240 / 0.08);
+    }
+
+    body[data-theme="console"] {
+      --bg: oklch(14% 0.018 235);
+      --surface: oklch(18% 0.022 235);
+      --surface-2: oklch(23% 0.026 235);
+      --text: oklch(92% 0.012 210);
+      --muted: oklch(70% 0.025 220);
+      --border: oklch(34% 0.035 230);
+      --accent: oklch(75% 0.16 205);
+      --accent-soft: oklch(29% 0.07 210);
+      --warning: oklch(78% 0.13 80);
+      --danger: oklch(70% 0.16 25);
+      --shadow: none;
+    }
+
+    body[data-theme="forge"] {
+      --bg: oklch(16% 0.012 250);
+      --surface: oklch(21% 0.014 250);
+      --surface-2: oklch(27% 0.018 245);
+      --text: oklch(90% 0.008 220);
+      --muted: oklch(68% 0.018 235);
+      --border: oklch(38% 0.025 240);
+      --accent: oklch(72% 0.13 205);
+      --accent-soft: oklch(30% 0.055 210);
+      --warning: oklch(76% 0.12 75);
+      --danger: oklch(67% 0.15 25);
+      --shadow: 0 12px 32px oklch(6% 0.01 250 / 0.28);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body-font);
+      font-size: 16px;
+      line-height: 1.7;
+      transition: background-color 180ms ease, color 180ms ease;
+    }
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    button { font: inherit; }
+    code, pre { font-family: var(--mono-font); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 264px minmax(0, 1fr) 224px;
+      max-width: 1440px;
+      min-height: 100vh;
+      margin: 0 auto;
+    }
+
+    .left-nav,
+    .right-toc {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: var(--space-5) var(--space-4);
+      background: var(--surface);
+    }
+    .left-nav { border-right: 1px solid var(--border); }
+    .right-toc { border-left: 1px solid var(--border); }
+
+    .brand {
+      margin-bottom: var(--space-5);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-kicker,
+    .eyebrow {
+      margin: 0 0 var(--space-2);
+      color: var(--accent);
+      font-family: var(--mono-font);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .brand strong {
+      display: block;
+      font-size: 21px;
+      line-height: 1.25;
+    }
+    .brand span {
+      display: block;
+      margin-top: var(--space-2);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .nav-group { margin-top: var(--space-5); }
+    .nav-title,
+    .toc-title {
+      margin: 0 0 var(--space-2);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .nav-link,
+    .toc-link {
+      display: block;
+      min-height: 40px;
+      padding: var(--space-2) var(--space-3);
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .nav-link:hover,
+    .toc-link:hover,
+    .nav-link.is-active,
+    .toc-link.is-active {
+      color: var(--text);
+      background: var(--accent-soft);
+      border-bottom-color: var(--accent);
+    }
+
+    .theme-picker {
+      display: grid;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+    }
+    .theme-button {
+      min-height: 40px;
+      padding: var(--space-2) var(--space-3);
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-1);
+      cursor: pointer;
+      text-align: left;
+    }
+    .theme-button[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    main {
+      min-width: 0;
+      padding: var(--space-7) var(--space-6);
+    }
+    article {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+    section { scroll-margin-top: var(--space-4); margin-top: 96px; }
+    section:first-child { margin-top: 0; }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+    h1 { max-width: 680px; margin-bottom: var(--space-4); font-size: clamp(42px, 7vw, 66px); }
+    h2 { margin-bottom: var(--space-4); font-size: 37px; }
+    h3 { margin-bottom: var(--space-2); font-size: 21px; }
+    p { margin: 0 0 var(--space-4); }
+    .lede { max-width: 680px; color: var(--muted); font-size: 21px; }
+
+    .hero-rule {
+      width: 96px;
+      height: 4px;
+      margin: var(--space-5) 0;
+      background: var(--accent);
+    }
+
+    .strength-list {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+    }
+    .strength-main,
+    .strength-side,
+    .callout,
+    .example-panel,
+    .orbit-demo {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .strength-main { padding: var(--space-5); }
+    .strength-side {
+      display: grid;
+      place-items: center;
+      min-height: 240px;
+      padding: var(--space-4);
+      background: var(--accent-soft);
+      text-align: center;
+    }
+    .strength-side strong {
+      display: block;
+      color: var(--accent);
+      font-family: var(--mono-font);
+      font-size: 50px;
+      line-height: 1;
+    }
+    .strength-side span { display: block; margin-top: var(--space-3); color: var(--muted); }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .flow-step {
+      position: relative;
+      min-height: 176px;
+      padding: var(--space-4);
+      border-right: 1px solid var(--border);
+    }
+    .flow-step:last-child { border-right: 0; }
+    .flow-number {
+      display: block;
+      color: var(--accent);
+      font-family: var(--mono-font);
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .flow-step p { margin: var(--space-3) 0 0; color: var(--muted); font-size: 14px; }
+
+    .callout {
+      margin: var(--space-5) 0;
+      padding: var(--space-4);
+      background: var(--accent-soft);
+    }
+    .callout strong { display: block; margin-bottom: var(--space-2); }
+
+    .example-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+    .example-tab {
+      min-height: 44px;
+      padding: var(--space-2) var(--space-3);
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-1);
+      cursor: pointer;
+    }
+    .example-tab[aria-selected="true"] {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+    .example-panel { padding: var(--space-5); }
+    .example-panel[hidden] { display: none; }
+    .prompt {
+      margin: var(--space-4) 0;
+      padding: var(--space-4);
+      overflow-x: auto;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-1);
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .orbit-demo {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: var(--space-5);
+      align-items: center;
+      padding: var(--space-5);
+    }
+    .orbit-stage {
+      position: relative;
+      width: 224px;
+      height: 224px;
+      border: 1px dashed var(--accent);
+      border-radius: 50%;
+    }
+    .crystal {
+      position: absolute;
+      inset: 72px;
+      display: grid;
+      place-items: center;
+      color: var(--bg);
+      background: var(--accent);
+      border: 8px solid var(--accent-soft);
+      transform: rotate(45deg);
+    }
+    .crystal span { transform: rotate(-45deg); font-size: 12px; font-weight: 700; }
+    .shield {
+      position: absolute;
+      top: 86px;
+      width: 44px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono-font);
+      font-size: 12px;
+    }
+    .shield-a { left: -22px; }
+    .shield-b { right: -22px; }
+    .orbit-stage.is-running .shield-a { animation: orbit-a 4s linear infinite; }
+    .orbit-stage.is-running .shield-b { animation: orbit-b 4s linear infinite; }
+    @keyframes orbit-a {
+      from { transform: rotate(0deg) translateX(112px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(112px) rotate(-360deg); }
+    }
+    @keyframes orbit-b {
+      from { transform: rotate(180deg) translateX(112px) rotate(-180deg); }
+      to { transform: rotate(540deg) translateX(112px) rotate(-540deg); }
+    }
+    .orbit-button {
+      min-height: 44px;
+      padding: var(--space-2) var(--space-4);
+      color: var(--bg);
+      background: var(--accent);
+      border: 0;
+      border-radius: var(--radius-1);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--space-4) 0;
+      background: var(--surface);
+      font-size: 14px;
+    }
+    th, td {
+      padding: var(--space-3);
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--surface-2); }
+
+    .folder-tree {
+      padding: var(--space-4);
+      overflow-x: auto;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-1);
+      line-height: 1.7;
+    }
+    .check-list { padding-left: 22px; }
+    .check-list li { margin-bottom: var(--space-2); }
+    footer {
+      margin-top: 96px;
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    body[data-theme="forge"] .strength-main,
+    body[data-theme="forge"] .example-panel,
+    body[data-theme="forge"] .callout,
+    body[data-theme="forge"] .orbit-demo {
+      border-width: 2px;
+    }
+    body[data-theme="forge"] h1,
+    body[data-theme="forge"] h2 {
+      text-transform: uppercase;
+      letter-spacing: -0.035em;
+    }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 248px minmax(0, 1fr); }
+      .right-toc { display: none; }
+    }
+    @media (max-width: 820px) {
+      .layout { display: block; }
+      .left-nav {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-group { display: none; }
+      .theme-picker { grid-template-columns: repeat(3, 1fr); }
+      main { padding: var(--space-6) var(--space-4); }
+      .strength-list,
+      .orbit-demo { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      .flow-step:nth-child(2) { border-right: 0; }
+      .flow-step:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .orbit-stage { margin: 0 auto; }
+    }
+    @media (max-width: 520px) {
+      main { padding: var(--space-5) var(--space-3); }
+      h1 { font-size: 42px; }
+      h2 { font-size: 28px; }
+      .theme-picker,
+      .flow { grid-template-columns: 1fr; }
+      .flow-step { border-right: 0; border-bottom: 1px solid var(--border); }
+      .flow-step:last-child { border-bottom: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body data-theme="console">
+  <div class="layout">
+    <nav class="left-nav" data-od-id="docs-left-nav" aria-label="主导航">
+      <div class="brand">
+        <p class="brand-kicker">Fangjie Zaomo</p>
+        <strong>方界造模 🎮</strong>
+        <span>不会 Blockbench，也能把模型需求说清楚。</span>
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-title">先看这里</p>
+        <a class="nav-link is-active" href="#start">它到底强在哪</a>
+        <a class="nav-link" href="#workflow">四步看懂流程</a>
+        <a class="nav-link" href="#examples">三个真实例子</a>
+        <a class="nav-link" href="#orbit">动画为什么会翻车</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-title">做模型</p>
+        <a class="nav-link" href="#texture">纹理选多大</a>
+        <a class="nav-link" href="#workspace">文件怎么放</a>
+        <a class="nav-link" href="#delivery">交付看什么</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-title">更多文档</p>
+        <a class="nav-link" href="USER_GUIDE.md">新手教程</a>
+        <a class="nav-link" href="WORKFLOW.md">完整流程</a>
+        <a class="nav-link" href="ENVIRONMENT.md">软件环境</a>
+        <a class="nav-link" href="../README.md">返回 GitHub 说明</a>
+      </div>
+
+      <div class="theme-picker" aria-label="选择网页风格">
+        <button class="theme-button" data-theme-choice="manual" aria-pressed="false">A · 清爽说明书</button>
+        <button class="theme-button" data-theme-choice="console" aria-pressed="true">B · 游戏控制台</button>
+        <button class="theme-button" data-theme-choice="forge" aria-pressed="false">C · 黑铁锻造间</button>
+      </div>
+    </nav>
+
+    <main>
+      <article data-od-id="docs-article">
+        <section id="start">
+          <p class="eyebrow">Approval first · Build second</p>
+          <h1>你说想法，Skill 把它变成能做的模型。</h1>
+          <p class="lede">它不是听到“做个怪兽”就直接乱建模，而是先问清楚、给三套图、等你选中，再去 Blockbench 正式制作。✨</p>
+          <div class="hero-rule"></div>
+
+          <div class="strength-list">
+            <div class="strength-main">
+              <h3>最强的地方不是“生成快”</h3>
+              <p>真正重要的是少返工。外观、纹理、动画、粒子、音效、损毁方式和保存位置都会在生产前说清楚。你没明确批准，它就不能正式开工。</p>
+              <p><strong>大白话：</strong>先把话说明白，再把活干漂亮。</p>
+            </div>
+            <div class="strength-side">
+              <div><strong>A / B / C</strong><span>三套方案，选中才开工</span></div>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>✅ 必须遵守的确认门</strong>
+            “还可以”“差不多”都不算批准。只有“我选择 B，按 B 开始正式建模”这类明确说法才算。
+          </div>
+        </section>
+
+        <section id="workflow">
+          <p class="eyebrow">Workflow</p>
+          <h2>四步看懂整个过程</h2>
+          <div class="flow" aria-label="四步工作流">
+            <div class="flow-step"><span class="flow-number">01</span><h3>说想法</h3><p>告诉它做什么、给谁用、想要什么感觉。</p></div>
+            <div class="flow-step"><span class="flow-number">02</span><h3>问清楚</h3><p>确认版本、精度、动画、效果、配套物和保存位置。</p></div>
+            <div class="flow-step"><span class="flow-number">03</span><h3>选方案</h3><p>先看 A、B、C 三套 Blockbench 可实现的图。</p></div>
+            <div class="flow-step"><span class="flow-number">04</span><h3>做和检查</h3><p>建模、贴图、动画、接 Mod，再用证据验证。</p></div>
+          </div>
+        </section>
+
+        <section id="examples">
+          <p class="eyebrow">Real examples</p>
+          <h2>三个实际例子</h2>
+          <p>点下面的按钮，看看用户怎么说，以及 Skill 需要继续检查什么。</p>
+          <div class="example-tabs" role="tablist" aria-label="模型例子">
+            <button class="example-tab" role="tab" aria-selected="true" aria-controls="wolf-panel" id="wolf-tab">🐺 机械三头狼</button>
+            <button class="example-tab" role="tab" aria-selected="false" aria-controls="tower-panel" id="tower-tab">⚡ 水晶能量塔</button>
+            <button class="example-tab" role="tab" aria-selected="false" aria-controls="sword-panel" id="sword-tab">🗡️ 魔法巨剑</button>
+          </div>
+
+          <div class="example-panel" id="wolf-panel" role="tabpanel" aria-labelledby="wolf-tab">
+            <h3>机械三头狼 Boss</h3>
+            <pre class="prompt">做一个黑铁机械三头狼，眼睛发红光。
+要待机、走路、三个攻击、受伤、死亡和损毁动画。
+死亡后留下冒烟残骸，纹理按 256×256 评估。</pre>
+            <p><strong>Skill 还要问：</strong>三个头是一起还是轮流攻击？红眼只发光还是还要粒子？残骸整体倒下还是零件散开？要不要 Boss 蛋、掉落核心和专属武器？</p>
+          </div>
+          <div class="example-panel" id="tower-panel" role="tabpanel" aria-labelledby="tower-tab" hidden>
+            <h3>水晶能量塔</h3>
+            <pre class="prompt">塔身里的能量从下往上输送。
+攻击时两块护盾围着水晶中心转，水晶发射能量弹。
+停火后继续转 5 秒，再慢慢归位。</pre>
+            <p><strong>Skill 还要检查：</strong>护盾是绕水晶公转，不是自己原地转；两块护盾方向一致、间距固定；完整动画中不能碰到水晶；启动、蓄能、发射、命中和冷却音效顺序正确。</p>
+          </div>
+          <div class="example-panel" id="sword-panel" role="tabpanel" aria-labelledby="sword-tab" hidden>
+            <h3>三阶段魔法巨剑</h3>
+            <pre class="prompt">基础状态是暗银巨剑。
+蓄力时符文从下往上点亮。
+满蓄力出现青蓝火焰，耐久归零切换断刃模型。</pre>
+            <p><strong>Skill 还要问：</strong>第一人称和第三人称比例怎么定？符文多久亮完？满蓄力声音什么时候播放？断裂位置在哪里？是否还需要展示架？</p>
+          </div>
+        </section>
+
+        <section id="orbit">
+          <p class="eyebrow">Animation check</p>
+          <h2>为什么“围着转”经常做错？</h2>
+          <div class="orbit-demo">
+            <div class="orbit-stage" id="orbit-stage" aria-label="两块护盾围绕水晶公转示意">
+              <div class="crystal"><span>水晶</span></div>
+              <div class="shield shield-a">护盾 A</div>
+              <div class="shield shield-b">护盾 B</div>
+            </div>
+            <div>
+              <h3>中心在水晶，不在护盾自己身上</h3>
+              <p>两块护盾围绕同一个中心公转，保持相同朝向和固定距离。旋转半径太小就会碰到水晶；只看关键帧正常，也不代表中间帧不会穿模。</p>
+              <button class="orbit-button" id="orbit-button" type="button" aria-pressed="false">播放公转示意</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="texture">
+          <p class="eyebrow">Texture</p>
+          <h2>纹理到底选多大？</h2>
+          <table>
+            <thead><tr><th>尺寸</th><th>适合</th><th>你会得到什么</th></tr></thead>
+            <tbody>
+              <tr><td>64×64</td><td>小物品、简单方块</td><td>文件小，但细节少</td></tr>
+              <tr><td>128×128</td><td>大多数普通模型</td><td>效果和工作量比较平衡</td></tr>
+              <tr><td>256×256</td><td>Boss、机械体、重点武器</td><td>能画磨损、接缝和发光细节</td></tr>
+              <tr><td>512×512</td><td>大型近景展示</td><td>最细，但制作和修改最慢</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">
+            <strong>高像素不等于自动高质量</strong>
+            如果选了 512×512，材质变化、划痕、接缝、阴影和高光也必须跟着做到高水平。只放大画布没有意义。
+          </div>
+        </section>
+
+        <section id="workspace">
+          <p class="eyebrow">Identity</p>
+          <h2>一个模型，一个文件夹</h2>
+          <p>这是防止模型、动画、音效和粒子互相串台的最简单办法。每个模型再加一个唯一的 asset_id，绑定前先对名字。</p>
+          <pre class="folder-tree">crystal_tower/
+├─ model/       模型源文件
+├─ textures/    纹理
+├─ animations/  动画
+├─ audio/       音效
+├─ particles/   粒子
+├─ previews/    预览图
+├─ mod/         Mod 接入
+└─ evidence/    截图、日志、检查报告</pre>
+          <p>例如水晶塔使用 crystal_tower，机械三头狼使用 mecha_cerberus。任何文件身份不一致，就先停下来检查。</p>
+        </section>
+
+        <section id="delivery">
+          <p class="eyebrow">Delivery</p>
+          <h2>什么才算真的完成？</h2>
+          <ul class="check-list">
+            <li>模型源文件能正常打开；</li>
+            <li>贴图没有丢失或串到别的模型；</li>
+            <li>完整动画播放时没有重叠和穿模；</li>
+            <li>粒子、声音和伤害事件顺序正确；</li>
+            <li>Mod 能编译并进入游戏测试；</li>
+            <li>有预览图、日志或报告证明这些结果。</li>
+          </ul>
+          <div class="callout">
+            <strong>🎮 最后记住</strong>
+            没问清楚，不建模；没看三套图，不选方案；没明确批准，不正式生产；没有验证证据，不算完成。
+          </div>
+        </section>
+
+        <footer>
+          <p><strong>方界造模</strong> · 让想象，按确认过的样子进入游戏。Enjoy creating! ✨</p>
+          <p><a href="https://github.com/xiaochen08/xiaochen08-fangjie-zaomo">查看 GitHub 仓库</a></p>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="right-toc" data-od-id="docs-right-toc" aria-label="本页目录">
+      <p class="toc-title">本页内容</p>
+      <a class="toc-link is-active" href="#start">它到底强在哪</a>
+      <a class="toc-link" href="#workflow">四步流程</a>
+      <a class="toc-link" href="#examples">三个例子</a>
+      <a class="toc-link" href="#orbit">动画示意</a>
+      <a class="toc-link" href="#texture">纹理精度</a>
+      <a class="toc-link" href="#workspace">独立工作区</a>
+      <a class="toc-link" href="#delivery">交付检查</a>
+    </aside>
+  </div>
+
+  <script>
+    const TWEAKS = /*EDITMODE-BEGIN*/{
+      "theme": "console",
+      "accentLabel": "cyan-energy",
+      "contentDensity": "comfortable"
+    }/*EDITMODE-END*/;
+
+    const themeButtons = document.querySelectorAll("[data-theme-choice]");
+    const savedTheme = localStorage.getItem("fangjie-docs-theme");
+    const firstTheme = savedTheme || TWEAKS.theme;
+
+    function applyTheme(theme) {
+      document.body.dataset.theme = theme;
+      themeButtons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.themeChoice === theme));
+      });
+      localStorage.setItem("fangjie-docs-theme", theme);
+    }
+    applyTheme(firstTheme);
+    themeButtons.forEach((button) => {
+      button.addEventListener("click", () => applyTheme(button.dataset.themeChoice));
+    });
+
+    const exampleTabs = document.querySelectorAll(".example-tab");
+    const examplePanels = document.querySelectorAll(".example-panel");
+    exampleTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        exampleTabs.forEach((item) => item.setAttribute("aria-selected", "false"));
+        examplePanels.forEach((panel) => { panel.hidden = true; });
+        tab.setAttribute("aria-selected", "true");
+        document.getElementById(tab.getAttribute("aria-controls")).hidden = false;
+      });
+    });
+
+    const orbitStage = document.getElementById("orbit-stage");
+    const orbitButton = document.getElementById("orbit-button");
+    orbitButton.addEventListener("click", () => {
+      const running = orbitStage.classList.toggle("is-running");
+      orbitButton.setAttribute("aria-pressed", String(running));
+      orbitButton.textContent = running ? "暂停公转示意" : "播放公转示意";
+    });
+
+    const sectionLinks = document.querySelectorAll('a[href^="#"]');
+    sectionLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const target = document.querySelector(link.getAttribute("href"));
+        if (!target) return;
+        event.preventDefault();
+        const top = window.scrollY + target.getBoundingClientRect().top - 24;
+        window.scrollTo({ top, behavior: "smooth" });
+      });
+    });
+
+    const watchedSections = document.querySelectorAll("article section[id]");
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      document.querySelectorAll(".nav-link, .toc-link").forEach((link) => {
+        link.classList.toggle("is-active", link.getAttribute("href") === "#" + visible.target.id);
+      });
+    }, { rootMargin: "-20% 0px -65% 0px", threshold: [0.1, 0.4, 0.8] });
+    watchedSections.forEach((section) => observer.observe(section));
+
+    window.addEventListener("message", (event) => {
+      if (event.data?.type === "__activate_edit_mode") {
+        document.body.dataset.editMode = "true";
+      }
+      if (event.data?.type === "__deactivate_edit_mode") {
+        delete document.body.dataset.editMode;
+      }
+    });
+    try { window.parent.postMessage({ type: "__edit_mode_available" }, "*"); } catch {}
+  </script>
+</body>
+</html>
