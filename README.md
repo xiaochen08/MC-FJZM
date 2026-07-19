@@ -2,7 +2,36 @@
 
 > **让你不会 Blockbench，也能把脑子里的 Minecraft 模型一步步做出来。Enjoy! ✨**
 
-[🌐 打开可视化使用说明](https://xiaochen08.github.io/xiaochen08-fangjie-zaomo/) · [📖 看详细教程](docs/USER_GUIDE.md) · [🧭 看完整流程](docs/WORKFLOW.md)
+[🌐 打开可视化使用说明](https://xiaochen08.github.io/MC-FJZM/) · [📖 看详细教程](docs/USER_GUIDE.md) · [🧭 看完整流程](docs/WORKFLOW.md)
+
+---
+
+## 安装 Skill
+
+这个仓库根目录就是可安装的 Skill，核心入口为 [SKILL.md](SKILL.md)。
+
+在 Windows PowerShell 中执行：
+
+~~~powershell
+python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo xiaochen08/MC-FJZM --path . --name create-blockbench-minecraft-models
+~~~
+
+安装完成后重启 Codex，然后直接说：
+
+~~~text
+使用 $create-blockbench-minecraft-models 帮我制作一个 Minecraft Java 模型。
+先询问需求并生成三套方案图，没有得到我的明确批准前不要正式建模。
+~~~
+
+Skill 本体包含：
+
+| 目录 | 作用 |
+|---|---|
+| [SKILL.md](SKILL.md) | Codex 识别和执行的主入口 |
+| [agents/openai.yaml](agents/openai.yaml) | 技能名称、简介和默认提示 |
+| [references](references) | 模型、动画、粒子、音效、Mod 和交付规则 |
+| [scripts](scripts) | 模型、音频、项目与交付验证脚本 |
+| [scripts/tests](scripts/tests) | 自动化测试 |
 
 ---
 
