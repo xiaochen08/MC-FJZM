@@ -13,10 +13,13 @@ Declare every delivered resource with a bundle-relative path, kind, and lowercas
 - audio manifest: approved mappings, source/output hashes, subtitles, and runtime registrations;
 - runtime integration files: controllers, registries, code/data adapters, localization, and target-specific exports.
 - model-first runtime contract: validated `runtime-contract.json` with the approved production ceiling and stable handoff IDs.
+- shader compatibility contract: validated `shader-contract.json` with the baseline fallback, exact named targets, material maps, render layer, test matrix, and evidence status.
 
 Paths must remain inside the bundle root. Embedded JSON identity and `rig_signature` must match the bundle. Animation `sound_event` and `particle_contract_id` references must resolve to the audio manifest and particle contracts.
 
 If `model-spec.json` declares `route_choice: model_first`, the bundle must include a valid `runtime-contract.json`. The bundle remains runtime-deferred: it may contain runtime-neutral sources and contracts, but no verified/runtime-tested claim or platform-specific export until an authorized project is inspected.
+
+If `model-spec.json` declares `shader_compatibility.required: true`, the bundle must include a valid `shader-contract.json`. Include every texture/map it names. Static validity does not authorize a shader-support claim: named targets remain unverified until their applicable in-game matrix rows pass with exact versions and contained hashed evidence.
 
 ## Manifest skeleton
 

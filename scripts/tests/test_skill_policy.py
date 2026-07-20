@@ -23,6 +23,8 @@ ASSET_ECOSYSTEM = Path(__file__).resolve().parents[2] / "references" / "asset-ec
 ASSET_WORKSPACE = Path(__file__).resolve().parents[2] / "references" / "asset-workspace.md"
 MODEL_FIRST_RUNTIME_GATE = Path(__file__).resolve().parents[2] / "references" / "model-first-runtime-gate.md"
 RUNTIME_CONTRACT_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_runtime_contract.py"
+SHADER_COMPATIBILITY = Path(__file__).resolve().parents[2] / "references" / "shader-compatibility.md"
+SHADER_CONTRACT_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_shader_contract.py"
 
 
 class ApprovalGatePolicyTests(unittest.TestCase):
@@ -47,6 +49,58 @@ class ApprovalGatePolicyTests(unittest.TestCase):
 
     def test_bypass_requires_an_already_approved_design_anchor(self):
         self.assertIn("already-approved design anchor", self.skill)
+
+
+class ShaderCompatibilityPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.shader = SHADER_COMPATIBILITY.read_text(encoding="utf-8") if SHADER_COMPATIBILITY.exists() else ""
+        cls.concept = CONCEPT_PROMPT.read_text(encoding="utf-8")
+        cls.quality = QUALITY_GATES.read_text(encoding="utf-8")
+
+    def test_shader_gate_runs_before_concept_generation(self):
+        gate = "Read [shader-compatibility.md](references/shader-compatibility.md) before concepts"
+        prompt = "Read [concept-prompt.md](references/concept-prompt.md) before invoking imagegen"
+        self.assertIn(gate, self.skill)
+        self.assertLess(self.skill.index(gate), self.skill.index(prompt))
+
+    def test_preflight_locks_renderer_shader_and_material_targets(self):
+        for phrase in (
+            "no-shader fallback",
+            "Iris or OptiFine",
+            "exact shader-pack name and version",
+            "PBR material standard and version",
+            "emissive behavior",
+            "transparency/render layer",
+        ):
+            self.assertIn(phrase, self.shader)
+
+    def test_universal_shader_compatibility_claims_are_forbidden(self):
+        self.assertIn("Never claim compatibility with all shader packs", self.shader)
+        self.assertIn("named targets only", self.shader)
+
+    def test_concept_sheet_avoids_baked_directional_lighting(self):
+        for phrase in ("neutral albedo", "painted-in directional highlights", "runtime lighting is not proof"):
+            self.assertIn(phrase, self.concept)
+
+    def test_runtime_matrix_covers_dark_bloom_and_transparency_risks(self):
+        for phrase in (
+            "no_shader_daylight",
+            "no_shader_dark",
+            "target_shader_daylight",
+            "target_shader_dark",
+            "bloom_stress",
+            "transparency_overlap",
+            "crushed blacks",
+            "double lighting",
+        ):
+            self.assertIn(phrase, self.shader + self.quality)
+
+    def test_shader_contract_validator_is_part_of_production(self):
+        self.assertTrue(SHADER_CONTRACT_VALIDATOR.exists())
+        self.assertIn("shader-contract.json", self.skill)
+        self.assertIn("validate_shader_contract.py", self.skill)
 
 
 class ModProjectBootstrapPolicyTests(unittest.TestCase):

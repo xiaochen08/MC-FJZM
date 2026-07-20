@@ -67,6 +67,18 @@ Do not create this production specification until the user has selected a concep
     "texels_per_blockbench_unit": 1,
     "necessity_rationale": "model complexity, viewing distance, hardware, reuse, style"
   },
+  "shader_compatibility": {
+    "required": true,
+    "contract_path": "shader-contract.json",
+    "contract_status": "provisional | validated",
+    "compatibility_tier": "vanilla_baseline | common_shader_safe | specified_shader_pack | pbr_targeted",
+    "support_claim": "baseline_only | named_targets_only",
+    "no_shader_fallback": true,
+    "named_targets": [],
+    "pbr_standard": "none | exact standard and version",
+    "emissive_behavior": "none | visual mask | runtime world light",
+    "transparency_render_layer": "opaque | cutout | translucent | mixed plus exact layer"
+  },
   "parts": [],
   "animations": [],
   "animation_system": {"path": "animation-system.json", "status": "provisional | approved", "rig_signature": "stable rig contract signature"},
@@ -118,6 +130,8 @@ When animation is required, read `animation-system.md`; design the provisional i
 
 When sound is required or audio is attached, read `audio-system.md`; inventory untouched sources, present Chinese/numbered-name mappings to stable English IDs, and freeze only approved mappings in `audio-manifest.json` and `audio_contracts`. Model approval and audio mapping approval remain independent; link both evidence records without treating either as the other.
 
+Always read `shader-compatibility.md` before concepts. Record the user's no-shader fallback, Iris/OptiFine or other loader, exact named shader-pack versions, PBR material convention, emissive/world-light ownership, transparency/render layer, target hardware, and evidence expectations. After concept approval, create and validate `shader-contract.json` before detailed texturing. Never convert an unresolved target into a universal compatibility claim.
+
 ## Decision policy
 
 For a new design, first ask about subject/use, target edition/runtime, scale/proportions, style/material/palette, signature parts, animations/attack behavior, and references. Group them into no more than three concise questions per turn. Generate three Blockbench-feasible visual variants and wait for an explicit selection before production.
@@ -148,6 +162,7 @@ Treat these as blocking when they change file format, rig topology, or game inte
 - self-rotation versus orbit, target pivot, or movement plane
 - required animations and attack mechanism
 - strict size or performance limits
+- shader loader/pack, PBR material standard, emissive world-light owner, or translucent render layer
 
 For `model_first`, read `model-first-runtime-gate.md` before concepts. Freeze the runtime risk intake before images, then create and validate `runtime-contract.json` after concept approval and before detailed production. Its stable `rig_signature`, `animation_ids`, `event_ids`, `locator_ids`, and `projectile_spawn` locator become the later `integration-map.json` inputs.
 

@@ -83,6 +83,18 @@ def _validate_runtime_contract_payload(payload: dict[str, Any]) -> dict[str, lis
     return module.validate_contract(payload)
 
 
+def _validate_shader_contract_payload(payload: dict[str, Any]) -> dict[str, list[str]]:
+    script = Path(__file__).with_name("validate_shader_contract.py")
+    if not script.is_file():
+        return {"errors": ["validate_shader_contract.py is missing"], "warnings": []}
+    spec = importlib.util.spec_from_file_location("bundle_shader_contract_validator", script)
+    if spec is None or spec.loader is None:
+        return {"errors": ["cannot load validate_shader_contract.py"], "warnings": []}
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.validate_contract(payload)
+
+
 def _validate_evidence(items: Any, errors: list[str]) -> None:
     if not isinstance(items, list) or not items:
         errors.append("workflow_evidence must be a non-empty list")
@@ -177,6 +189,24 @@ def validate_bundle(manifest: dict[str, Any], bundle_root: Path | str) -> dict[s
         runtime_result = _validate_runtime_contract_payload(runtime_contract)
         errors.extend(f"runtime-contract.json: {message}" for message in runtime_result["errors"])
         warnings.extend(f"runtime-contract.json: {message}" for message in runtime_result["warnings"])
+
+    shader_required = False
+    if isinstance(model_spec, dict) and isinstance(model_spec.get("shader_compatibility"), dict):
+        shader_required = model_spec["shader_compatibility"].get("required") is True
+    shader_contract = json_resources.get("shader-contract.json")
+    if shader_required and not isinstance(shader_contract, dict):
+        errors.append("model-spec shader compatibility requires shader-contract.json")
+    if isinstance(shader_contract, dict):
+        shader_result = _validate_shader_contract_payload(shader_contract)
+        errors.extend(f"shader-contract.json: {message}" for message in shader_result["errors"])
+        warnings.extend(f"shader-contract.json: {message}" for message in shader_result["warnings"])
+        materials = shader_contract.get("materials")
+        if isinstance(materials, dict):
+            declared = {path.relative_to(root).as_posix() for path in seen_paths if path.is_file()}
+            for field in ("base_texture", "emissive_mask", "normal_map", "specular_map", "roughness_map", "metalness_map"):
+                value = materials.get(field)
+                if isinstance(value, str) and value.replace("\\", "/") not in declared:
+                    errors.append(f"shader-contract.json references undeclared resource: {value}")
 
     event_table = json_resources.get("animation-events.json", {})
     sound_targets = _collect_named_values(json_resources.get("audio-manifest.json", {}), "event_id")

@@ -131,6 +131,17 @@ class AssetBundleValidatorTests(unittest.TestCase):
         result = self.validator.validate_bundle(manifest, self.base)
         self.assertTrue(any("model_first bundle requires runtime-contract.json" in error for error in result["errors"]))
 
+    def test_shader_requested_bundle_requires_valid_shader_contract_resource(self):
+        model_spec = json.loads((self.base / "model-spec.json").read_text(encoding="utf-8"))
+        model_spec["shader_compatibility"] = {"required": True, "contract_path": "shader-contract.json"}
+        (self.base / "model-spec.json").write_text(json.dumps(model_spec), encoding="utf-8")
+        manifest = deepcopy(self.manifest)
+        for resource in manifest["resources"]:
+            if resource["path"] == "model-spec.json":
+                resource["sha256"] = sha(self.base / "model-spec.json")
+        result = self.validator.validate_bundle(manifest, self.base)
+        self.assertTrue(any("requires shader-contract.json" in error for error in result["errors"]))
+
 
 if __name__ == "__main__":
     unittest.main()

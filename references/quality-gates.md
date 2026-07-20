@@ -8,6 +8,7 @@
 - Present a tailored related-asset list; record single versus approved-set scope and a separate decision for every suggested companion.
 - Generate three clearly labeled, Blockbench-feasible concept previews with comparable views.
 - Before imagegen, compile a concept-to-build manifest and apply `concept-prompt.md` without unresolved placeholders.
+- Before imagegen, read `shader-compatibility.md`; lock the no-shader baseline, exact named shader/PBR targets, emissive/world-light behavior, transparency/render layer, and performance/evidence burden.
 - When particles are required, complete the provisional particle contract, emitter plan, event timing, and paired effect-preview prompt before imagegen.
 - When audio is attached, inventory every source and obtain approval for the source-to-English-event mapping before conversion or animation binding.
 - Keep model concept approval and audio mapping approval independent; re-open only the gate affected by a change unless timing, rig, or event ownership crosses both.
@@ -62,6 +63,8 @@ Pass before material polish.
 - Keep eyes, noses, weapons, cores, and other identity anchors readable at gameplay distance.
 - Require efficient UV use; a mostly empty large atlas is not high quality.
 - Do not upscale a low-resolution texture or enlarge nearest-neighbor pixels to claim high resolution. Paint natively at the approved density.
+- Keep albedo neutral: reject painted-in directional light, cast shadows, bloom halos, or environment tint that create double lighting in-game.
+- Keep emissive/PBR maps separate and follow only the locked material standard/version. Translucent or mixed materials require an explicit render layer and overlap/sorting evidence.
 
 For detailed/ultra tiers, require consistent texel density, efficient UV use, readable material separation, deliberate highlights, shadows, and wear, and identity details at gameplay distance. If the extra pixels carry no purposeful information, reduce the resolution.
 
@@ -77,10 +80,12 @@ Pass when detail improves readability without destroying the Minecraft form lang
 - Run `scripts/validate_bbmodel.py` with task requirements.
 - Verify clips and pivots in actual Blockbench, then verify the state controller, blending, root motion, transition matrix, and event synchronization in the actual target runtime.
 - For particles, validate attachment, timing, cleanup, budget, LOD, and fallback in the actual target runtime; do not claim the effect works from a Blockbench screenshot.
+- Validate `shader-contract.json` and execute applicable `no_shader_daylight`, `no_shader_dark`, `side_lighting`, `target_shader_daylight`, `target_shader_dark`, `emissive_dark`, `bloom_stress`, and `transparency_overlap` rows in-game. Inspect for crushed blacks, blown highlights, double lighting, inverted normals, noisy PBR response, transparency sorting/halos, Z-fighting, culling, and light leaks.
 - For sound, validate registration, spatial origin, timing, volume, loop cleanup, interruption, and multiplayer duplication in the actual target runtime.
 - Run `scripts/validate_audio_manifest.py` against the runtime sound registry and central event table. Validate subtitles, visual telegraphs, provenance/license status, performance budgets, and version-specific adapter evidence.
 - Cross-check every audio/particle/animation binding against the same model-spec hash, asset ID, version, rig signature, event table, and locator set. Reject cross-model paths or approvals.
 - Build `asset-bundle.json` from `asset-bundle.md`; run `scripts/validate_asset_bundle.py` and retain the exact report with resource and evidence hashes.
+- Preserve exact Minecraft/loader/shader-pack versions, preset, model/map hashes, screenshots/video hashes, tester, timestamp, and expected/actual results for every passed shader row. Blockbench preview is not runtime proof.
 - Confirm every source and evidence path is inside the approved asset folder; authorized Mod integration copies must map back by asset identity and source hash.
 
 Pass only when structural checks, visual checks, and user-visible previews agree.
@@ -96,7 +101,7 @@ Pass only when every advertised verified-support row has reproducible archived e
 
 ## Runtime boundary
 
-Blockbench source geometry and animation do not automatically implement emissive shaders, particles, projectiles, damage, targeting, sound, cooldown logic, or animation state controllers. Deliver event names and timestamps, then implement or document those behaviors in the selected Minecraft runtime. Use `particle-design.md` for particles and `audio-system.md` for sound.
+Blockbench source geometry and animation do not automatically implement emissive shaders, world lighting, PBR material decoding, particles, projectiles, damage, targeting, sound, cooldown logic, or animation state controllers. Deliver event names and timestamps, then implement or document those behaviors in the selected Minecraft runtime. Use `shader-compatibility.md` for lighting/materials, `particle-design.md` for particles, and `audio-system.md` for sound.
 
 For `model_first`, run `scripts/validate_runtime_contract.py` before detailed production and again before bundling. Treat its production ceiling as a hard maximum: a concept/graybox/runtime-neutral source cannot be relabeled as a platform export, compatible Mod asset, or game-ready deliverable.
 
@@ -112,5 +117,6 @@ For `model_first`, run `scripts/validate_runtime_contract.py` before detailed pr
 - Approved `audio-manifest.json`, converted OGG files when authorized, sound registrations, and runtime binding evidence
 - Audio inspection report, source hashes, localized subtitles, provenance/license records, and multiplayer/interrupt/performance results
 - Model specification, assumptions, and unresolved runtime work
+- Validated `shader-contract.json`, base texture plus approved emissive/PBR maps, no-shader fallback, named-target matrix, and hashed runtime evidence
 - Unified `asset-bundle.json`, validation report, ordered workflow evidence, `runtime-delivery.json`, and release-qualification matrix
 - No overwritten user files; use clear versioned filenames

@@ -6,6 +6,8 @@ For a model-first bundle, load and validate `runtime-contract.json` first. Compa
 
 Before writing adapters, create `integration-map.json` that maps the stable model contract to actual runtime owners: resource/model paths, renderer and model layer, block/entity/block-entity/projectile registration, animation controller/state, server-owned gameplay event, client particle/audio event, networking/synchronization field, collision/hitbox, persistence, and save/load behavior. Missing owners remain blockers.
 
+Load and validate `shader-contract.json` before choosing render adapters. Reconcile its Minecraft version, renderer/loader, exact shader-pack target, material standard, texture/map names, emissive world-light owner, and transparency/render layer against the inspected project. Do not silently reinterpret maps or advertise a different pack/version.
+
 ## Safe scaffold
 
 First run `scripts/inspect_runtime_project.py` against the authorized project and preserve its project inspection report. Do not type version fields from memory. Conflicting or missing evidence blocks adapter selection and verified support.
@@ -41,6 +43,12 @@ Record:
 - hashed actual viewport captures showing required states and critical frames.
 
 Changing the model after capture invalidates the hashes and dependent evidence.
+
+## Shader and lighting evidence
+
+Execute every applicable stable case from `shader-compatibility.md` in the actual game. Record the exact loader and version, shader pack and version, preset/settings, GPU/render settings when relevant, model and texture/map hashes, timestamp, tester, steps, expected and actual results, and contained capture/video hashes. Verify no-shader fallback separately. A Blockbench viewport, generated concept image, schema pass, or static screenshot outside the named runtime does not prove shader compatibility.
+
+Changes to UVs, base/emissive/PBR maps, render layer, renderer, loader, shader pack, preset, or Minecraft version invalidate affected rows. Never generalize named-target evidence to all shader packs.
 
 ## Target and build evidence
 

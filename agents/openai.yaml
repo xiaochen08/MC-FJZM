@@ -1,4 +1,4 @@
 interface:
   display_name: "Create Blockbench Minecraft Models"
-  short_description: "Create and verify Minecraft models, animation, particles, and audio"
-  default_prompt: "Use $create-blockbench-minecraft-models to ask my Windows drive/root, create one approved folder per model, confirm Mod route, related assets, and damage scope before imagegen, show A/B/C sheets for selection, then require evidence before model or release claims."
+  short_description: "Create verified Minecraft models with animation, effects, audio, and shader gates"
+  default_prompt: "Use $create-blockbench-minecraft-models to ask my Windows drive/root, create one approved folder per model, confirm Mod route, related assets, damage scope, and shader/lighting targets before imagegen, show A/B/C sheets for selection, then require contracts and runtime evidence before model, shader, or release claims."
