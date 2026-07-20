@@ -2,36 +2,39 @@
 
 > **让你不会 Blockbench，也能把脑子里的 Minecraft 模型一步步做出来。Enjoy! ✨**
 
-**正式名称：方界造模｜品牌缩写：FJZM｜主调用名：`$fjzm`｜动画专修：`$fjzm-animation`**
+**正式名称：方界造模｜品牌缩写：FJZM｜主调用名：`$fjzm`｜纹理专修：`$fjzm-texture`｜动画专修：`$fjzm-animation`**
 
-**当前版本：v3.0.0｜发布日期：2026-07-20**
+**当前版本：v4.2.0｜发布日期：2026-07-20**
 
 [🌐 打开可视化使用说明](https://xiaochen08.github.io/MC-FJZM/) · [📖 看详细教程](docs/USER_GUIDE.md) · [🧭 看完整流程](docs/WORKFLOW.md) · [🗓️ 查看更新日志](CHANGELOG.md)
 
-使用 WorkBuddy：下载同一个套件 ZIP，再按 [WorkBuddy 导入说明](docs/WORKBUDDY.md) 依次导入里面的两个技能包。
+📦 [直接下载 FJZM v4.2.0 完整套件](dist/fjzm-suite-v4.2.0.zip)
+
+使用 WorkBuddy：下载同一个套件 ZIP，再按 [WorkBuddy 导入说明](docs/WORKBUDDY.md) 依次导入里面的三个技能包。
 
 ---
 
 ## 一次安装完整套件
 
-v3.0.0 不再只发一个孤立的大 Skill。正式套件同时包含：
+v4.2.0 不再只发一个孤立的大 Skill。正式套件同时包含：
 
 - [`$fjzm`](skills/fjzm/SKILL.md)：需求、方案图、模型、贴图、光影、粒子、音效、Mod 接入和最终验收的总负责人；
+- [`$fjzm-texture`](skills/fjzm-texture/SKILL.md)：UV、像素贴图、材质层次、眼睛、接缝和贴图返修；
 - [`$fjzm-animation`](skills/fjzm-animation/SKILL.md)：只负责骨骼、动画生产、Blockbench 预览、诊断和返修。
 
-主 Skill 发现需要动画时必须调用动画工坊；动画工坊完成后必须把 `animation-result.json` 交回主 Skill，之后才能绑定粒子、音效、碰撞、能量弹和 Mod 控制器。缺少任意一个 Skill，动画生产都会停止，避免半套流程继续乱做。
+主 Skill 负责统一审批和集成；纹理工坊返回 `texture-result.json`，动画工坊返回 `animation-result.json`。缺少对应子技能时，主流程会停止那部分专业生产，避免半套流程继续乱做。
 
-### 方法一：一条命令安装两个 Skill
+### 方法一：一条命令安装三个 Skill
 
 在 Windows PowerShell 中执行：
 
 ~~~powershell
-python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo xiaochen08/MC-FJZM --ref v3.0.0 --path skills/fjzm skills/fjzm-animation
+python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo xiaochen08/MC-FJZM --ref v4.2.0 --path skills/fjzm skills/fjzm-texture skills/fjzm-animation
 ~~~
 
 ### 方法二：一个 ZIP 离线安装
 
-下载 Release 里的 `fjzm-suite-v3.0.0.zip`，解压后在该目录运行：
+下载仓库中的 [`dist/fjzm-suite-v4.2.0.zip`](dist/fjzm-suite-v4.2.0.zip)，解压后在该目录运行：
 
 ~~~powershell
 .\Install-FJZMSuite.ps1
@@ -43,13 +46,13 @@ python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\i
 .\Install-FJZMSuite.ps1 -BackupAndReplace
 ~~~
 
-脚本会先做完整性检查，再同时更新两个 Skill，并保留带日期的旧版备份；如果只发现其中一个，脚本会拒绝继续，防止半套安装。
+脚本会先做完整性检查，再同时更新三个 Skill，并保留带日期的旧版备份；如果检测到不完整套件，脚本会拒绝继续，防止半套安装。
 
 安装完成后重启 Codex，然后直接说：
 
 ~~~text
 使用 $fjzm 帮我制作一个 Minecraft Java 模型。
-先询问需求并生成三套方案图，没有得到我的明确批准前不要正式建模。
+先创建全资产总览，再按 A/B/C、单资产全视图、动作和 GUI 逐轮确认；没有得到我的明确批准前不要正式建模。
 ~~~
 
 > Skill 机器名只能使用小写字母、数字和连字符，因此品牌写作 **FJZM**，正式调用写作 **`$fjzm`**。
@@ -58,11 +61,27 @@ Skill 本体包含：
 
 | 目录 | 作用 |
 |---|---|
-| [.codex-plugin/plugin.json](.codex-plugin/plugin.json) | 同时注册两个 Skill 的插件清单 |
+| [.codex-plugin/plugin.json](.codex-plugin/plugin.json) | 同时注册三个 Skill 的插件清单 |
 | [skills/fjzm](skills/fjzm) | 方界造模主 Skill 完整本体 |
+| [skills/fjzm-texture](skills/fjzm-texture) | 纹理工坊子 Skill 完整本体 |
 | [skills/fjzm-animation](skills/fjzm-animation) | 动画工坊子 Skill 完整本体 |
+| [dist/fjzm-suite-v4.2.0.zip](dist/fjzm-suite-v4.2.0.zip) | Codex 与 WorkBuddy 离线完整套件 |
 | [Install-FJZMSuite.ps1](Install-FJZMSuite.ps1) | Windows 成套安装与安全更新脚本 |
 | [SKILL.md](SKILL.md) | 为旧安装方式保留的主 Skill 兼容入口 |
+
+## v4.2.0 重点更新：连续生图项目制与资产展示合同
+
+- 多资产 Mod 先生成全资产总览，再开始单资产细化；
+- 主模型先做 A/B/C 主题选择，锁定后继续正面、背面、左侧、右侧、顶部、底部、三分之四和动作关键帧；
+- 模型、动作、GUI、损毁和特效图分轮生成，不再挤在一张图里；
+- 每轮提示词、负面提示词、图片、审查、用户修改、批准证据和 SHA-256 都保存在工程目录；
+- `image-production-index.json` 负责跨对话续做，旧轮次不覆盖、不删除；
+- 每个 Mod 资产必须设计“名称 + 灰色斜体 Mod 名 + 使用说明 + 主题彩蛋文案”；
+- 彩蛋支持正经、轻度中二和全力中二，使用 4–8 条已批准文案池，禁止每帧闪烁；
+- 正式文字使用本地化键和运行时渲染，不把中文烙进模型或 GUI 贴图；
+- 新增生图索引与资产展示两个自动校验器。
+
+[查看 v4.2.0 完整更新内容](CHANGELOG.md#420---2026-07-20)
 
 ## v3.0.0 重点更新：动画工坊与主 Skill 正式绑定
 

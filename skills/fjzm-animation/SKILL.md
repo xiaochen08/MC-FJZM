@@ -7,6 +7,14 @@ description: "Use when creating, rigging, previewing, diagnosing, or revising Mi
 
 `$fjzm-animation` is the animation specialist for 方界造模. It accepts either `delegated production` from `$fjzm` or a user-requested `standalone revision` of an existing approved model. It does not replace the main skill's concept, model identity, texture, shader, particle, audio, Mod, or release decisions.
 
+## User conversation protocol
+
+When talking directly to the user, Ask exactly one user-facing question per turn. Never combine clip choice, timing, movement, pivot, collision clearance, events, and approval decisions in one message. Keep the remaining question queue internal and skip anything the user has already answered.
+
+Use plain Chinese and an internet-friendly conversational tone. Explain the current choice and its direct impact in one or two short sentences. Offer 2 or 3 numbered choices for the same decision, put the recommended choice first with `（推荐）`, and accept a number, option name, or free-text reply. Avoid raw terms such as pivot, interpolation, rig signature, and root motion; when unavoidable, explain them in everyday words first. End every active question with: `回复序号就行，也可以直接说你的想法。`
+
+Approval is one question too. Present a short result summary, then ask only whether to approve or revise. Silence is not approval.
+
 ## Hard gate
 
 Read [animation-handoff.md](references/animation-handoff.md) before editing any model. Read [animation-revision.md](references/animation-revision.md) for every optimization or repair request.
@@ -29,7 +37,7 @@ If a request needs geometry, UV, texture, bone topology, bone names, hierarchy, 
 
 ## Revision approval gate
 
-For an existing animation, inspect and explain the defect before editing. Present the affected clips, diagnosis, proposed key-pose/timing/interpolation/pivot/clearance changes, protected parts, output version, and validation plan. Obtain explicit revision approval. Silence is not approval.
+For an existing animation, inspect and explain the defect before editing. Build the affected clips, diagnosis, proposed key-pose/timing/interpolation/pivot/clearance changes, protected parts, output version, and validation plan internally. Present a short plain-language summary, then obtain explicit revision approval as one numbered approval question. Silence is not approval.
 
 Approval to improve one clip does not authorize changes to other clips, geometry, textures, events, or gameplay behavior.
 

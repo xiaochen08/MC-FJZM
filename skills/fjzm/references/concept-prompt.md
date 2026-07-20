@@ -19,6 +19,8 @@ Do not include an unapproved related asset in a manifest or image. For an approv
 
 Every A/B/C package must visibly demonstrate all approved requirements. Each package contains a primary model sheet, a related-asset sheet when companions are approved, and a damage/destruction keyframe sheet when staged damage or full destruction is approved. Generate required sheets separately when a combined sheet would reduce readable detail. Do not replace a required visual sheet with text. An explicitly approved single, non-destructible asset needs only the primary sheet.
 
+After theme selection, use `image-production-system.md` to create the complete view matrix and one action/keyframe sheet for every approved animation. Concept A/B/C may use compact comparable sheets, but the final build reference may not omit hidden sides or motion keys.
+
 ## Master image prompt
 
 Replace every brace field; never send unresolved placeholders to imagegen.
@@ -46,13 +48,16 @@ STRICT BLOCKBENCH GEOMETRY
 Construct the visible design only from buildable cuboids/boxes and the rotations supported by {FORMAT}. Preserve hard square edges and Minecraft form language. Use no smooth sculpting, organic curves, subdivision surfaces, rounded bevels, cloth simulation, hair strands, or details that would require a high-poly mesh; do not depict any visible feature that is absent from the build manifest. Do not hide impossible geometry behind effects or darkness.
 
 MODEL-SHEET VIEWS
-Show front, left side, back, and three-quarter views of the exact same model in one clean sheet. Use orthographic projection for front/side/back and a restrained fixed camera for the three-quarter view. Align every view to the same floor line and scale. Maintain the same proportions and part count across every view; matching armor plates, eyes, joints, weapons, cores, and appendages must occupy consistent positions.
+Show front, back, left side, right side, top, bottom, and three-quarter views of the exact same model in a coordinated clean package. Use orthographic projection for front, back, left, right, top, and bottom, and a restrained fixed camera for the three-quarter view. Align every view to the same scale and applicable floor line. Maintain the same proportions and part count across every view; matching armor plates, eyes, joints, weapons, cores, appendages, underside parts, and texture markings must occupy consistent positions.
+
+ACTION PREVIEW
+When animation is approved, create a separate action/keyframe sheet for each approved clip or transition. Show readable key poses at matched scale, including anticipation, event/contact pose, follow-through, hold/cooldown, recovery, and return pose when applicable. Keep geometry and texture identical to the neutral view package. This sheet plans motion only; do not present it as proof of a working Blockbench or in-game animation.
 
 BLOCKBENCH-LIKE PRESENTATION
 Use neutral studio lighting, restrained ambient occlusion, crisp hard-surface shading, a plain dark checker or neutral viewport background, and unobstructed full-body framing. Render pixel textures sharply without antialiasing blur. Use no cinematic perspective, no depth of field, no bloom, no particles, no motion blur, no fog, no dramatic rim light, no photorealistic PBR reflections, and no environment scenery. Emissive areas may be flat bright pixel regions without glow spill. All runtime-only effects are excluded from the model sheet and described separately in text; runtime lighting is not proof of compatibility until the exact model is tested in-game.
 
 OUTPUT DISCIPLINE
-Generate each variant as a separate image package; generate each required sheet as a separate image using identical design, scale, and lighting. Keep the primary sheet in neutral idle; use aligned readable keyframes on the damage/destruction sheet. Do not embed A/B/C labels or any text, dimensions, arrows, UI, watermark, or logo inside images.
+Generate each variant as a separate image package; generate each required sheet as a separate image using identical design, scale, and lighting. Keep the primary sheet in neutral idle; use aligned readable keyframes on action and damage/destruction sheets. Keep GUI previews in separate GUI rounds. Do not embed A/B/C labels or any text, dimensions, arrows, UI, watermark, or logo inside model images.
 ```
 
 ## Negative prompt

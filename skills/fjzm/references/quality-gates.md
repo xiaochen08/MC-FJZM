@@ -3,10 +3,19 @@
 ## Gate 0: user design approval
 
 - Lock `project_id`, `asset_id`, `asset_version`, display name, and identity-scoped workspace before any artifact or attachment mapping; show the target header at every asset switch.
-- Ask for the Windows drive/root, show the absolute per-model folder, obtain path approval, and never merge two model identities into one folder.
-- Ask the compact requirements brief before generating a new design.
+- Follow `user-dialogue.md` for every intake and approval: ask exactly one question per turn, keep the remaining queue internal, and never merge two model identities into one folder.
+- When `create_mod_first` is selected, ask the Minecraft version before every other Mod/model/GUI detail.
+- Ask only for the Windows drive letter in one turn; derive `X:\FJZM-Projects\<project_id>` automatically and include it in project-creation approval.
+- Pass the red host UTF-8 gate before the Mod shell and the red project UTF-8 gate before any custom source or resource.
+- Complete the requirements brief through separate single-decision turns before generating a new design.
 - Present a tailored related-asset list; record single versus approved-set scope and a separate decision for every suggested companion.
-- Generate three clearly labeled, Blockbench-feasible concept previews with comparable views.
+- For multi-asset scope, archive and show the full asset overview before any per-asset detail round.
+- Generate three clearly labeled, Blockbench-feasible concept previews with comparable views, obtain the theme lock, then continue the indexed per-asset rounds.
+- Require the final model reference package to include front, back, left, right, top, bottom, three-quarter, and every approved action/keyframe sheet with identical geometry and texture.
+- Store every prompt, negative prompt, manifest, image, review, approval, and SHA-256 under immutable `design/image-rounds/`; resume from `design/image-production-index.json` instead of restarting.
+- Run `scripts/validate_image_production_index.py`; a broken round ID, dependency, path, hash, or approval record blocks image continuation and delivery.
+- When GUI is in scope, generate three Minecraft-faithful GUI theme previews, obtain separate GUI approval, and archive approved model and GUI images in `design/approved-previews/`.
+- When a runtime Mod asset is in scope, create `asset-presentation.json`; require the display name, gray italic Mod line, factual colored usage line, approved themed flavor pool, localization keys, and accessible layout. Run `scripts/validate_asset_presentation.py` before final GUI approval or runtime integration.
 - Before imagegen, compile a concept-to-build manifest and apply `concept-prompt.md` without unresolved placeholders.
 - Before imagegen, read `shader-compatibility.md`; lock the no-shader baseline, exact named shader/PBR targets, emissive/world-light behavior, transparency/render layer, and performance/evidence burden.
 - When particles are required, complete the provisional particle contract, emitter plan, event timing, and paired effect-preview prompt before imagegen.
@@ -32,11 +41,13 @@ Pass when the silhouette, proportions, signature parts, palette, and Minecraft f
 - Use separate groups for every independently moving assembly.
 - Place origins at physical joints or declared external pivots before adding detail.
 - For animated models, approve the rig hierarchy, default pose, sockets, root-motion policy, state graph, and highest-risk motion grayboxes.
-- Check front, side, rear, top, and three-quarter silhouettes.
+- Reopen the saved graybox in actual Blockbench; capture front, side, back, top, and three-quarter views at matched scale and neutral lighting.
 - Match the concept sheet's scale, part inventory, proportions, and camera views; document any unavoidable deviation and request approval before continuing.
 - Check static intersections, floating pieces, coplanar faces, excessive cube count, and scale.
+- Present the actual Blockbench graybox views and a reference-anchor checklist to the user. Record explicit user graybox approval naming the accepted version and deviations. Silence is not graybox approval.
+- Freeze `geometry_signature` only after that approval. Plan and freeze `uv_signature` before texture delegation; any later geometry or UV change reopens the affected gate.
 
-Pass before detailed UVs or textures.
+Pass before detailed UVs or textures only on explicit user graybox approval.
 
 ## Gate 3: motion prototype
 
@@ -57,6 +68,10 @@ Pass before material polish.
 
 ## Gate 4: texture and detail
 
+`fjzm` remains the texture approval owner and integration owner. `$fjzm-texture` is the single texture writer for one identity-locked, versioned output. Create `texture-handoff.json`, lock `project_id`, `asset_id`, `asset_version`, `model_sha256`, `geometry_signature`, `uv_signature`, approved reference hashes, and shader-contract hash, then run `fjzm-texture/scripts/validate_texture_handoff.py`.
+
+The specialist must return to `$fjzm` with `texture-result.json`, `texture-spec.json`, `reference-fidelity-report.json`, texture maps, and actual Blockbench evidence. Do not qualify shaders, bundle, or release the asset before the texture result returns. Geometry, rig, animation, locator, or unapproved UV changes must stop and reopen the owning gate.
+
 - Match the approved atlas size and maintain consistent texel density.
 - Check UV bounds, seams, mirrored details, face texture indices, and texture paths.
 - Separate material values with value, hue, edge highlights, recess shadows, wear, and emissive masks—not random noise.
@@ -68,7 +83,7 @@ Pass before material polish.
 
 For detailed/ultra tiers, require consistent texel density, efficient UV use, readable material separation, deliberate highlights, shadows, and wear, and identity details at gameplay distance. If the extra pixels carry no purposeful information, reduce the resolution.
 
-Pass when detail improves readability without destroying the Minecraft form language.
+Pass only after the user gives explicit texture-preview approval for the actual Blockbench result and detail improves readability without destroying the Minecraft form language.
 
 ## Gate 5: actual Blockbench evidence
 
@@ -120,3 +135,7 @@ For `model_first`, run `scripts/validate_runtime_contract.py` before detailed pr
 - Validated `shader-contract.json`, base texture plus approved emissive/PBR maps, no-shader fallback, named-target matrix, and hashed runtime evidence
 - Unified `asset-bundle.json`, validation report, ordered workflow evidence, `runtime-delivery.json`, and release-qualification matrix
 - No overwritten user files; use clear versioned filenames
+- Validated `encoding-preflight.json` with `project_passed` status for Java Mod production
+- Approved GUI preview, `screen-to-texture` manifest, `approval-index.json`, and actual in-game GUI screenshots when GUI is in scope
+- Complete `design/image-production-index.json`, all immutable image rounds, full model view matrices, action/keyframe sheets, prompts, hashes, reviews, and approval evidence
+- Validated `asset-presentation.json` for every player-facing asset, localization entries, four-line information hierarchy, approved flavor pool, stable selection rule, and GUI-scale/readability evidence

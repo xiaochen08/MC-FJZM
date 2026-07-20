@@ -6,7 +6,7 @@ Blockbench .bbmodel does not implement runtime particles. It can provide model g
 
 Use this contract when particles or runtime effects are requested or implied by charging, firing, impact, magic, smoke, steam, sparks, aura, trails, transformation, teleportation, damage, death, weather, or environmental activity.
 
-Before concept generation, ask compactly about:
+Before concept generation, queue the following decisions internally and ask exactly one question per turn in plain language:
 
 - particle purpose/state: idle ambience, activation, charge, attack, projectile, impact, cooldown, damage, death, or environment;
 - emitter bone/group or socket, approximate location, direction, whether it follows the animated part, and required clearance;

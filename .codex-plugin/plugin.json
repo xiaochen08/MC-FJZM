@@ -1,25 +1,26 @@
 {
   "name": "fjzm-suite",
-  "version": "3.0.0",
-  "description": "方界造模主流程与动画工坊子技能的完整 Minecraft Blockbench 建模套件。",
+  "version": "4.2.0",
+  "description": "方界造模主流程、动画工坊与纹理工坊的 Minecraft Mod 与 Blockbench 完整套件。",
   "author": {
     "name": "xiaochen08",
     "url": "https://github.com/xiaochen08"
   },
   "homepage": "https://github.com/xiaochen08/MC-FJZM",
   "repository": "https://github.com/xiaochen08/MC-FJZM",
-  "keywords": ["minecraft", "blockbench", "modeling", "animation", "mod"],
+  "keywords": ["minecraft", "blockbench", "modeling", "animation", "texture", "gui", "mod", "utf-8"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "方界造模 FJZM 套件",
-    "shortDescription": "建模主流程与动画专修一起安装、严格交接。",
-    "longDescription": "先由方界造模锁定需求、模型身份与用户审批，再由动画工坊完成骨骼、动画和返修，最后回到主流程绑定粒子、音效与 Mod。",
+    "displayName": "方界造模 FJZM 三技能套件",
+    "shortDescription": "Minecraft Mod、模型、GUI、动画和资源成套生产。",
+    "longDescription": "选择创建 Mod 后先锁定 Minecraft 版本并通过 Windows UTF-8 红色门禁；用户只需提供盘符。系统先生成全资产总览，再把模型 A/B/C、全视图、动作和 GUI 分轮确认并永久归档；每个资产都有名称、灰色斜体 Mod 名、用法和彩蛋文案，最后由纹理和动画工坊完成生产与验证。",
     "developerName": "xiaochen08",
     "category": "Developer Tools",
-    "capabilities": ["Minecraft Blockbench modeling", "Animation revision", "Mod integration"],
+    "capabilities": ["Minecraft Mod bootstrap", "UTF-8 preflight", "Persistent image production", "Complete model views", "Themed asset presentation", "Blockbench modeling", "Minecraft GUI design", "Pixel texture production", "Animation revision"],
     "defaultPrompt": [
-      "使用 $fjzm 从需求确认开始制作一个 Minecraft 模型。",
-      "使用 $fjzm-animation 诊断并优化这个 Blockbench 动画。"
+      "使用 $fjzm 创建 Minecraft Mod 与模型，先问 Minecraft 版本并通过 UTF-8 红色门禁，再按全资产总览、A/B/C、全视图、动作与 GUI 的顺序逐轮确认。",
+      "使用 $fjzm-texture 分析参考图和 UV，再制作高级像素贴图。",
+      "使用 $fjzm-animation 诊断并优化现有 Blockbench 动画。"
     ],
     "brandColor": "#00D8FF"
   }

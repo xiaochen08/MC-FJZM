@@ -33,9 +33,9 @@ Do not create production rig or animation files before concept approval. After a
 
 ## Damage and destruction gate
 
-For every entity, boss, machine, vehicle, furniture, block entity, or structure that can plausibly be attacked or broken, ask whether it is destructible. Record one choice: `not applicable | impact reaction only | staged damage | full destruction`. Do not assume that a death clip is a destruction system.
+For every entity, boss, machine, vehicle, furniture, block entity, or structure that can plausibly be attacked or broken, ask whether it is destructible. Record one choice: `not applicable | impact reaction only | staged damage | full destruction`. Follow the dialogue contract and ask exactly one question per turn. Do not assume that a death clip is a destruction system.
 
-When enabled, define the visible state path `intact → minor damage → major damage → critical → destroyed`, health/trigger thresholds, legal skips, interruption rules, and what follows: repair, respawn, persistent wreck, or despawn. Ask whether damage persists across unload/save and whether repair reverses stages or replaces the asset.
+When enabled, define the visible state path `intact → minor damage → major damage → critical → destroyed`, health/trigger thresholds, legal skips, interruption rules, and what follows: repair, respawn, persistent wreck, or despawn. Put persistence and repair behavior into separate queue items; never ask both in the same turn.
 
 Choose and approve one or more Blockbench-feasible visual strategies:
 

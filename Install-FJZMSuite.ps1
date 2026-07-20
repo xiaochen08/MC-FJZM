@@ -14,15 +14,13 @@ $suiteRoot = [System.IO.Path]::GetFullPath($PSScriptRoot)
 $sourceRoot = [System.IO.Path]::GetFullPath((Join-Path $suiteRoot 'skills'))
 $destination = [System.IO.Path]::GetFullPath($DestinationRoot)
 $destinationDriveRoot = [System.IO.Path]::GetPathRoot($destination).TrimEnd('\')
-
 if ($destination.TrimEnd('\') -eq $destinationDriveRoot) {
     throw "DestinationRoot cannot be a drive root: $destination"
 }
 
-$skillNames = @('fjzm', 'fjzm-animation')
+$skillNames = @('fjzm', 'fjzm-animation', 'fjzm-texture')
 $sourcePaths = @{}
 $targetPaths = @{}
-
 foreach ($name in $skillNames) {
     $sourcePaths[$name] = [System.IO.Path]::GetFullPath((Join-Path $sourceRoot $name))
     $targetPaths[$name] = [System.IO.Path]::GetFullPath((Join-Path $destination $name))
@@ -34,12 +32,19 @@ foreach ($name in $skillNames) {
     }
 }
 
-$existing = @($skillNames | Where-Object { Test-Path -LiteralPath $targetPaths[$_] })
-if ($existing.Count -eq 1) {
-    throw "Refusing partial suite installation. Found only '$($existing[0])'. Repair or back it up before installing both skills together."
+$existing = @($skillNames | Where-Object { Test-Path -LiteralPath $targetPaths[$_] -PathType Container })
+$legacyPair = $existing.Count -eq 2 -and $existing -contains 'fjzm' -and $existing -contains 'fjzm-animation' -and $existing -notcontains 'fjzm-texture'
+$completeV4 = $existing.Count -eq 3
+
+if ($legacyPair) {
+    Write-Host 'Legacy v3 pair detected: fjzm + fjzm-animation.'
 }
-if ($existing.Count -eq 2 -and -not $BackupAndReplace) {
-    throw "Both skills already exist. Re-run with -BackupAndReplace to create a dated backup and update both together."
+elseif ($existing.Count -ne 0 -and -not $completeV4) {
+    throw "Refusing partial suite installation. Found: $($existing -join ', '). Expected none, the legacy v3 pair, or all three v4 skills."
+}
+
+if (($legacyPair -or $completeV4) -and -not $BackupAndReplace) {
+    throw 'Existing FJZM installation detected. Re-run with -BackupAndReplace to back it up and install all three v4 skills together.'
 }
 
 if (-not (Test-Path -LiteralPath $destination -PathType Container)) {
@@ -48,57 +53,56 @@ if (-not (Test-Path -LiteralPath $destination -PathType Container)) {
 
 $stage = Join-Path $destination ('.fjzm-suite-stage-' + [Guid]::NewGuid().ToString('N'))
 $backup = $null
+$activated = @()
 New-Item -ItemType Directory -Path $stage | Out-Null
 
 try {
     foreach ($name in $skillNames) {
         $stagedSkill = Join-Path $stage $name
         Copy-Item -LiteralPath $sourcePaths[$name] -Destination $stagedSkill -Recurse
-        $skillFile = Join-Path $stagedSkill 'SKILL.md'
-        $skillText = Get-Content -LiteralPath $skillFile -Raw -Encoding UTF8
+        $skillText = Get-Content -LiteralPath (Join-Path $stagedSkill 'SKILL.md') -Raw -Encoding UTF8
         if ($skillText -notmatch "(?m)^name:\s+$([regex]::Escape($name))\s*$") {
             throw "Staged skill identity check failed: $name"
         }
     }
 
-    if ($existing.Count -eq 2) {
+    if ($existing.Count -gt 0) {
         $backup = Join-Path $destination ('.fjzm-suite-backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
         New-Item -ItemType Directory -Path $backup | Out-Null
-        foreach ($name in $skillNames) {
+        foreach ($name in $existing) {
             Move-Item -LiteralPath $targetPaths[$name] -Destination (Join-Path $backup $name)
         }
     }
 
     foreach ($name in $skillNames) {
         Move-Item -LiteralPath (Join-Path $stage $name) -Destination $targetPaths[$name]
+        $activated += $name
     }
 
-    $stageChildren = @(Get-ChildItem -LiteralPath $stage -Force)
-    if ($stageChildren.Count -ne 0) {
+    if (@(Get-ChildItem -LiteralPath $stage -Force).Count -ne 0) {
         throw "Installation stage is not empty after activation: $stage"
     }
     Remove-Item -LiteralPath $stage
 
-    Write-Host "Installed FJZM suite 3.0.0:"
+    Write-Host 'Installed FJZM suite 4.2.0:'
     foreach ($name in $skillNames) {
         Write-Host "  $($targetPaths[$name])"
     }
     if ($backup) {
         Write-Host "Previous suite backup: $backup"
     }
-    Write-Host 'Restart Codex or start a new task before invoking $fjzm or $fjzm-animation.'
+    Write-Host 'Restart Codex or start a new task before invoking $fjzm, $fjzm-texture, or $fjzm-animation.'
 }
 catch {
-    foreach ($name in $skillNames) {
-        $newTarget = $targetPaths[$name]
-        if (Test-Path -LiteralPath $newTarget -PathType Container) {
-            Move-Item -LiteralPath $newTarget -Destination (Join-Path $stage $name)
+    foreach ($name in $activated) {
+        if (Test-Path -LiteralPath $targetPaths[$name] -PathType Container) {
+            Move-Item -LiteralPath $targetPaths[$name] -Destination (Join-Path $stage ($name + '.failed-new'))
         }
     }
     if ($backup -and (Test-Path -LiteralPath $backup -PathType Container)) {
-        foreach ($name in $skillNames) {
+        foreach ($name in $existing) {
             $backupSkill = Join-Path $backup $name
-            if (Test-Path -LiteralPath $backupSkill -PathType Container) {
+            if ((Test-Path -LiteralPath $backupSkill -PathType Container) -and -not (Test-Path -LiteralPath $targetPaths[$name])) {
                 Move-Item -LiteralPath $backupSkill -Destination $targetPaths[$name]
             }
         }

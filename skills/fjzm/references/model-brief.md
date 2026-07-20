@@ -12,10 +12,17 @@ Do not create this production specification until the user has selected a concep
   "asset_id": "stable_lowercase_asset_id",
   "asset_version": "semantic_or_project_version",
   "display_name_zh": "user-facing Chinese name",
+  "project_workspace": {
+    "drive": "D:",
+    "project_root": "D:\\FJZM-Projects\\project_id",
+    "mod_folder": "D:\\FJZM-Projects\\project_id\\mod",
+    "approved_previews_folder": "D:\\FJZM-Projects\\project_id\\design\\approved-previews",
+    "creation_approval_evidence": "verbatim user approval"
+  },
   "asset_workspace": {
     "drive": "D:",
-    "approved_root": "D:\\Minecraft-Blockbench-Models\\project_id",
-    "asset_folder": "D:\\Minecraft-Blockbench-Models\\project_id\\asset_id__v1",
+    "approved_root": "D:\\FJZM-Projects\\project_id",
+    "asset_folder": "D:\\FJZM-Projects\\project_id\\assets\\models\\asset_id__v1",
     "folder_status": "proposed | created",
     "path_approval_evidence": "verbatim user approval"
   },
@@ -60,12 +67,49 @@ Do not create this production specification until the user has selected a concep
     "selected_variant": "A | B | C | approved_reference",
     "evidence": "verbatim user approval message"
   },
+  "image_production": {
+    "index_path": "design/image-production-index.json",
+    "status": "queued | active | final_visual_lock",
+    "overview_round": "round-001",
+    "theme_round": "round-002",
+    "theme_approval_evidence": null,
+    "required_model_views": ["front", "back", "left", "right", "top", "bottom", "three_quarter"],
+    "required_action_sheets": [],
+    "approved_preview_paths": [],
+    "next_unresolved_round": null
+  },
+  "asset_presentation": {
+    "manifest_path": "assets/models/asset_id__v1/specs/asset-presentation.json",
+    "validation_status": "pending | passed | failed",
+    "presentation_surface": [],
+    "tone_mode": "themed_serious | light_chuunibyou | full_chuunibyou",
+    "approval_evidence": null
+  },
   "style": {"shape_language": [], "materials": [], "palette": []},
   "texture_quality": {
     "tier": "minimum | standard | detailed | ultra | exceptional",
     "atlas": [128, 128],
     "texels_per_blockbench_unit": 1,
     "necessity_rationale": "model complexity, viewing distance, hardware, reuse, style"
+  },
+  "texture_system": {
+    "geometry_signature": "frozen after explicit graybox approval",
+    "uv_signature": "frozen approved UV contract signature",
+    "graybox_approval": {
+      "status": "pending | explicitly_approved",
+      "evidence": "verbatim user approval",
+      "blockbench_preview_paths": []
+    },
+    "handoff": {
+      "path": "texture-handoff.json",
+      "writer_skill": "fjzm-texture",
+      "single_writer": true,
+      "reference_hashes": [],
+      "shader_contract_hash": null,
+      "validation_status": "pending | passed | failed",
+      "result_path": "texture-result.json | null",
+      "texture_preview_approval_status": "pending | explicitly_approved"
+    }
   },
   "shader_compatibility": {
     "required": true,
@@ -107,6 +151,13 @@ Do not create this production specification until the user has selected a concep
     "runtime_health_owner": "target runtime or unresolved"
   },
   "runtime_effects": [],
+  "gui_system": {
+    "required": false,
+    "selected_theme": "A | B | C | null",
+    "screen_manifest": "gui/screen-to-texture.json | null",
+    "approved_preview": "design/approved-previews/gui__screen_id__theme__v1.png | null",
+    "approval_evidence": null
+  },
   "particle_contracts": [],
   "audio_contracts": {
     "manifest": "audio-manifest.json",
@@ -145,11 +196,15 @@ When animation is required, read `animation-system.md`; design the provisional i
 
 When sound is required or audio is attached, read `audio-system.md`; inventory untouched sources, present Chinese/numbered-name mappings to stable English IDs, and freeze only approved mappings in `audio-manifest.json` and `audio_contracts`. Model approval and audio mapping approval remain independent; link both evidence records without treating either as the other.
 
+For every player-facing Mod asset, read `asset-presentation.md`; create an identity-scoped `asset-presentation.json` with localized display name, gray italic Mod name, factual usage line, approved themed flavor pool, stable selection rule, presentation surfaces, layout tokens, and GUI-scale evidence. Run `scripts/validate_asset_presentation.py`. Do not bake final localized text into a texture.
+
+For every image-producing project, read `image-production-system.md`; keep `image_production` synchronized with the persistent project index. Do not infer that an overview, theme, individual asset, GUI, or action approval authorizes another round.
+
 Always read `shader-compatibility.md` before concepts. Record the user's no-shader fallback, Iris/OptiFine or other loader, exact named shader-pack versions, PBR material convention, emissive/world-light ownership, transparency/render layer, target hardware, and evidence expectations. After concept approval, create and validate `shader-contract.json` before detailed texturing. Never convert an unresolved target into a universal compatibility claim.
 
 ## Decision policy
 
-For a new design, first ask about subject/use, target edition/runtime, scale/proportions, style/material/palette, signature parts, animations/attack behavior, and references. Group them into no more than three concise questions per turn. Generate three Blockbench-feasible visual variants and wait for an explicit selection before production.
+For a new design, create an internal queue for subject/use, target edition/runtime, scale/proportions, style/material/palette, signature parts, animations/attack behavior, and references. Ask exactly one user-facing question per turn under `user-dialogue.md`; never expose the whole intake list unless the user asks for it. Generate three Blockbench-feasible visual variants only after the required queue items are resolved, then wait for an explicit selection before production.
 
 ## Texture quality decision
 

@@ -16,7 +16,7 @@ Complexity outranks appearance. A static ornate statue may be low risk; a visual
 
 ## Mandatory intake before images
 
-Ask and record:
+Queue and record the following information. Ask exactly one question per turn; do not present the numbered list as a single questionnaire:
 
 1. Java edition target, intended `asset_role`, in-game scale, collision/hitbox owner, and whether it is a block, item, entity, block entity, projectile, wearable, structure, or display.
 2. Required runtime features: animation, AI/targeting, damage, projectile, particles, audio, emissive/shader behavior, destruction, persistence, inventory, networking, and multiplayer synchronization.

@@ -57,6 +57,25 @@ class ModProjectBriefValidatorTests(unittest.TestCase):
                 "wrapper": "gradlew.bat",
                 "global_install_allowed": False,
             },
+            "intake": {
+                "first_question_id": "minecraft_version",
+                "minecraft_version_evidence": "1.21.1",
+                "questions_before_version": [],
+            },
+            "java_policy": {
+                "required_minimum_major": 21,
+                "installed_jdk_majors": [25],
+                "selected_gradle_runtime_major": 25,
+                "compile_release_major": 21,
+                "newer_jdk_compatibility": "verified",
+                "keep_existing_jdks": True,
+                "uninstall_or_downgrade_existing_jdk": False,
+            },
+            "encoding_preflight": {
+                "severity": "red",
+                "status": "host_passed",
+                "report_path": "encoding-preflight.json",
+            },
         }
 
     def tearDown(self):
@@ -97,6 +116,35 @@ class ModProjectBriefValidatorTests(unittest.TestCase):
         brief["destination_path"] = str(self.destination)
         result = self.validator.validate_brief(brief)
         self.assertTrue(any("destination already exists" in error for error in result["errors"]))
+
+    def test_rejects_any_question_before_the_minecraft_version(self):
+        brief = deepcopy(self.complete)
+        brief["intake"]["first_question_id"] = "loader"
+        brief["intake"]["questions_before_version"] = ["loader", "drive"]
+        result = self.validator.validate_brief(brief)
+        self.assertTrue(any("Minecraft version must be the first Mod-creation question" in error for error in result["errors"]))
+
+    def test_rejects_missing_red_utf8_host_preflight(self):
+        brief = deepcopy(self.complete)
+        brief["encoding_preflight"]["status"] = "pending"
+        result = self.validator.validate_brief(brief)
+        self.assertTrue(any("red UTF-8 host preflight" in error for error in result["errors"]))
+
+    def test_accepts_verified_java_25_without_downgrading_for_java_21_minimum(self):
+        result = self.validator.validate_brief(self.complete)
+        self.assertEqual(result["errors"], [])
+
+    def test_rejects_java_below_minimum_or_unverified_newer_runtime(self):
+        brief = deepcopy(self.complete)
+        brief["java_policy"]["installed_jdk_majors"] = [17]
+        brief["java_policy"]["selected_gradle_runtime_major"] = 17
+        result = self.validator.validate_brief(brief)
+        self.assertTrue(any("below the required minimum" in error for error in result["errors"]))
+
+        brief = deepcopy(self.complete)
+        brief["java_policy"]["newer_jdk_compatibility"] = "assumed"
+        result = self.validator.validate_brief(brief)
+        self.assertTrue(any("newer JDK compatibility must be verified" in error for error in result["errors"]))
 
     def test_model_first_runtime_deferred_is_valid_but_never_created_or_verified(self):
         brief = {

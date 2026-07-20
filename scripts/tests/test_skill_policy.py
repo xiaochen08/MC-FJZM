@@ -5,6 +5,7 @@ from pathlib import Path
 SKILL_MD = Path(__file__).resolve().parents[2] / "SKILL.md"
 AGENT_CONFIG = Path(__file__).resolve().parents[2] / "agents" / "openai.yaml"
 MODEL_BRIEF = Path(__file__).resolve().parents[2] / "references" / "model-brief.md"
+USER_DIALOGUE = Path(__file__).resolve().parents[2] / "references" / "user-dialogue.md"
 QUALITY_GATES = Path(__file__).resolve().parents[2] / "references" / "quality-gates.md"
 CONCEPT_PROMPT = Path(__file__).resolve().parents[2] / "references" / "concept-prompt.md"
 MODEL_CATEGORIES = Path(__file__).resolve().parents[2] / "references" / "model-categories.md"
@@ -26,6 +27,12 @@ MODEL_FIRST_RUNTIME_GATE = Path(__file__).resolve().parents[2] / "references" / 
 RUNTIME_CONTRACT_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_runtime_contract.py"
 SHADER_COMPATIBILITY = Path(__file__).resolve().parents[2] / "references" / "shader-compatibility.md"
 SHADER_CONTRACT_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_shader_contract.py"
+WINDOWS_UTF8_PREFLIGHT = Path(__file__).resolve().parents[2] / "references" / "windows-utf8-preflight.md"
+GUI_DESIGN = Path(__file__).resolve().parents[2] / "references" / "gui-design.md"
+UTF8_PREFLIGHT_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_encoding_preflight.py"
+IMAGE_PRODUCTION = Path(__file__).resolve().parents[2] / "references" / "image-production-system.md"
+ASSET_PRESENTATION = Path(__file__).resolve().parents[2] / "references" / "asset-presentation.md"
+ASSET_PRESENTATION_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_asset_presentation.py"
 
 
 class OfficialIdentityPolicyTests(unittest.TestCase):
@@ -45,6 +52,11 @@ class OfficialIdentityPolicyTests(unittest.TestCase):
     def test_default_prompt_uses_new_call_name(self):
         self.assertIn("$fjzm", self.agent)
         self.assertNotIn("$create-blockbench-minecraft-models", self.agent)
+
+    def test_default_prompt_reflects_version_first_and_utf8_red_gate(self):
+        self.assertIn("先问 Minecraft 版本", self.agent)
+        self.assertIn("UTF-8 红色门禁", self.agent)
+        self.assertIn("GUI", self.agent)
 
 
 class AnimationSubskillBindingPolicyTests(unittest.TestCase):
@@ -88,6 +100,40 @@ class AnimationSubskillBindingPolicyTests(unittest.TestCase):
         self.assertIn("Do not bind particles, audio, hitboxes, or projectiles to a changed rig before the result returns", self.animation)
 
 
+class TextureSubskillBindingPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.gates = QUALITY_GATES.read_text(encoding="utf-8")
+        cls.brief = MODEL_BRIEF.read_text(encoding="utf-8")
+        cls.all_text = cls.skill + cls.gates + cls.brief
+
+    def test_detailed_texturing_requires_the_specialist_subskill(self):
+        self.assertIn("**REQUIRED SUB-SKILL:** Use fjzm-texture", self.skill)
+        self.assertIn("If `fjzm-texture` is unavailable, stop detailed texture production", self.skill)
+
+    def test_graybox_requires_actual_user_approval_before_uv_and_texture(self):
+        for phrase in (
+            "actual Blockbench graybox",
+            "front, side, back, top, and three-quarter",
+            "explicit user graybox approval",
+            "Silence is not graybox approval",
+        ):
+            self.assertIn(phrase, self.gates)
+
+    def test_geometry_and_uv_are_frozen_before_texture_handoff(self):
+        for phrase in ("geometry_signature", "uv_signature", "texture-handoff.json", "validate_texture_handoff.py"):
+            self.assertIn(phrase, self.all_text)
+
+    def test_main_remains_texture_approval_and_integration_owner(self):
+        for phrase in ("`fjzm` remains the texture approval owner", "single texture writer", "return to `$fjzm`"):
+            self.assertIn(phrase, self.gates)
+
+    def test_texture_result_blocks_shader_and_release_claims(self):
+        self.assertIn("texture-result.json", self.skill)
+        self.assertIn("Do not qualify shaders, bundle, or release the asset before the texture result returns", self.gates)
+
+
 class ApprovalGatePolicyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -110,6 +156,57 @@ class ApprovalGatePolicyTests(unittest.TestCase):
 
     def test_bypass_requires_an_already_approved_design_anchor(self):
         self.assertIn("already-approved design anchor", self.skill)
+
+
+class SingleQuestionDialoguePolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.brief = MODEL_BRIEF.read_text(encoding="utf-8")
+        cls.dialogue = USER_DIALOGUE.read_text(encoding="utf-8") if USER_DIALOGUE.exists() else ""
+        cls.shader = SHADER_COMPATIBILITY.read_text(encoding="utf-8")
+        cls.particles = PARTICLE_DESIGN.read_text(encoding="utf-8")
+        cls.animation = ANIMATION_SYSTEM.read_text(encoding="utf-8")
+        cls.runtime_gate = MODEL_FIRST_RUNTIME_GATE.read_text(encoding="utf-8")
+        cls.quality = QUALITY_GATES.read_text(encoding="utf-8")
+        cls.all_text = cls.skill + cls.brief + cls.dialogue
+
+    def test_main_routes_all_intake_through_the_dialogue_contract(self):
+        self.assertIn("Read [user-dialogue.md](references/user-dialogue.md) before asking anything", self.skill)
+        self.assertIn("Ask exactly one user-facing question per turn", self.all_text)
+        self.assertIn("Never bundle multiple user decisions into one question", self.all_text)
+
+    def test_remaining_questions_stay_hidden(self):
+        self.assertIn("Keep the remaining question queue internal", self.dialogue)
+        self.assertIn("Do not show the full questionnaire unless the user asks", self.dialogue)
+
+    def test_questions_use_plain_chinese_and_numbered_choices(self):
+        for phrase in (
+            "plain Chinese",
+            "internet-friendly conversational tone",
+            "explain unavoidable jargon in everyday words first",
+            "2 or 3 numbered choices",
+            "recommended option first",
+            "回复序号就行，也可以直接说你的想法。",
+        ):
+            self.assertIn(phrase, self.dialogue)
+
+    def test_user_can_reply_by_number_name_or_free_text(self):
+        self.assertIn("number, option name, or free text", self.dialogue)
+
+    def test_answered_questions_are_not_repeated(self):
+        self.assertIn("Do not repeat answered questions", self.dialogue)
+        self.assertIn("mark it answered and ask the next unresolved question", self.dialogue)
+
+    def test_old_grouped_question_policy_is_removed(self):
+        self.assertNotIn("in at most three grouped questions", self.skill)
+        self.assertNotIn("Group them into no more than three concise questions per turn", self.brief)
+
+    def test_specialized_preflight_references_do_not_reintroduce_question_dumps(self):
+        self.assertNotIn("Ask these together", self.shader)
+        self.assertNotIn("ask compactly about", self.particles)
+        for text in (self.shader, self.particles, self.runtime_gate, self.animation, self.quality):
+            self.assertIn("one question per turn", text)
 
 
 class ShaderCompatibilityPolicyTests(unittest.TestCase):
@@ -248,6 +345,245 @@ class ModProjectBootstrapPolicyTests(unittest.TestCase):
             self.assertIn(phrase, self.bootstrap)
         for phrase in ("project_status", "destination_path", "compatibility_evidence", "runtime_deferred"):
             self.assertIn(phrase, self.brief)
+
+    def test_create_mod_route_asks_minecraft_version_before_every_other_detail(self):
+        for phrase in (
+            "the first question must ask for the target Minecraft version",
+            "No loader, Java, workspace, model, GUI, or asset question may appear before it",
+            "你要做哪个 Minecraft 版本的 Mod？",
+        ):
+            self.assertIn(phrase, self.bootstrap + self.dialogue if hasattr(self, "dialogue") else self.bootstrap)
+
+    def test_newer_java_is_preserved_but_must_be_proven_compatible(self):
+        for phrase in (
+            "Never uninstall or downgrade a newer JDK",
+            "installed JDK is a candidate, not automatic proof",
+            "must not be below the required minimum Java major",
+            "newer Java may still be incompatible with the pinned Gradle wrapper or loader plugin",
+            "side-by-side JDK",
+        ):
+            self.assertIn(phrase, self.bootstrap)
+
+    def test_java_policy_links_primary_gradle_compatibility_sources(self):
+        self.assertIn("https://docs.gradle.org/current/userguide/compatibility.html", self.bootstrap)
+        self.assertIn("https://docs.gradle.org/current/userguide/toolchains.html", self.bootstrap)
+
+
+class WindowsUtf8RedGatePolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.bootstrap = MOD_PROJECT_BOOTSTRAP.read_text(encoding="utf-8")
+        cls.utf8 = WINDOWS_UTF8_PREFLIGHT.read_text(encoding="utf-8") if WINDOWS_UTF8_PREFLIGHT.exists() else ""
+
+    def test_utf8_gate_is_red_and_runs_before_project_source_generation(self):
+        self.assertIn("Read [windows-utf8-preflight.md](references/windows-utf8-preflight.md)", self.skill)
+        for phrase in (
+            "severity: red",
+            "before any Mod source, model, GUI, texture, animation, or localized resource is created",
+            "Fail closed",
+            "encoding-preflight.json",
+        ):
+            self.assertIn(phrase, self.utf8)
+
+    def test_utf8_gate_covers_every_windows_text_boundary(self):
+        for phrase in (
+            "PowerShell 7",
+            "UTF-8 without BOM",
+            "LF line endings",
+            "-Dfile.encoding=UTF-8",
+            "JavaCompile",
+            "Chinese sentinel",
+            "strict UTF-8 decode scan",
+            "console input and output",
+        ):
+            self.assertIn(phrase, self.utf8)
+
+    def test_utf8_gate_has_a_machine_validator_and_two_phases(self):
+        self.assertTrue(UTF8_PREFLIGHT_VALIDATOR.exists())
+        self.assertIn("host_passed", self.utf8)
+        self.assertIn("project_passed", self.utf8)
+        self.assertIn("custom project files remain blocked", self.utf8)
+
+    def test_utf8_gate_links_the_primary_openjdk_specification(self):
+        self.assertIn("https://openjdk.org/jeps/400", self.utf8)
+
+
+class GuiConceptPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.gui = GUI_DESIGN.read_text(encoding="utf-8") if GUI_DESIGN.exists() else ""
+        cls.workspace = ASSET_WORKSPACE.read_text(encoding="utf-8")
+
+    def test_gui_requests_require_three_imagegen_theme_previews(self):
+        self.assertIn("Read [gui-design.md](references/gui-design.md)", self.skill)
+        for phrase in (
+            "REQUIRED SUB-SKILL: use imagegen",
+            "three distinct Minecraft-faithful GUI theme previews",
+            "Theme A",
+            "Theme B",
+            "Theme C",
+            "explicit GUI approval",
+        ):
+            self.assertIn(phrase, self.gui)
+
+    def test_gui_preview_is_minecraft_specific_and_implementation_faithful(self):
+        for phrase in (
+            "Minecraft pixel-art language",
+            "target GUI scale",
+            "slot grid",
+            "nine-slice",
+            "no web-dashboard styling",
+            "screen-to-texture manifest",
+            "actual in-game screenshot",
+        ):
+            self.assertIn(phrase, self.gui)
+
+    def test_approved_gui_and_model_images_share_one_project_preview_folder(self):
+        for phrase in (
+            "design/approved-previews/",
+            "model__",
+            "gui__",
+            "approval-index.json",
+        ):
+            self.assertIn(phrase, self.gui + self.workspace)
+
+
+class ImageProductionSystemPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.system = IMAGE_PRODUCTION.read_text(encoding="utf-8") if IMAGE_PRODUCTION.exists() else ""
+        cls.workspace = ASSET_WORKSPACE.read_text(encoding="utf-8")
+        cls.dialogue = USER_DIALOGUE.read_text(encoding="utf-8")
+
+    def test_multi_asset_scope_starts_with_a_complete_asset_overview(self):
+        for phrase in (
+            "full asset overview",
+            "primary model",
+            "approved related assets",
+            "GUI screens",
+            "before any per-asset detail round",
+        ):
+            self.assertIn(phrase, self.system)
+
+    def test_model_preview_requires_complete_view_and_action_matrix(self):
+        for phrase in (
+            "front",
+            "back",
+            "left side",
+            "right side",
+            "top",
+            "bottom",
+            "three-quarter",
+            "action/keyframe sheet",
+            "exact same geometry, proportions, cube inventory, and texture",
+        ):
+            self.assertIn(phrase, self.system)
+
+    def test_image_rounds_are_persistent_versioned_and_non_overwriting(self):
+        for phrase in (
+            "design/image-rounds/",
+            "image-production-index.json",
+            "prompt.md",
+            "negative-prompt.md",
+            "manifest.json",
+            "review.json",
+            "approval-evidence",
+            "Never overwrite",
+            "SHA-256",
+        ):
+            self.assertIn(phrase, self.system + self.workspace)
+
+    def test_round_states_and_cross_conversation_resume_are_explicit(self):
+        for phrase in (
+            "queued",
+            "generated",
+            "shown",
+            "revision_requested",
+            "approved",
+            "superseded",
+            "highest-priority unresolved round",
+            "future conversation",
+        ):
+            self.assertIn(phrase, self.system)
+
+    def test_theme_lock_precedes_asset_and_gui_detail_rounds(self):
+        for phrase in (
+            "A/B/C",
+            "theme lock",
+            "per-asset detail rounds",
+            "screen-specific GUI detail rounds",
+            "one active approval question",
+        ):
+            self.assertIn(phrase, self.system + self.dialogue)
+
+    def test_gui_and_model_sheets_are_generated_as_separate_rounds(self):
+        self.assertIn("Do not combine model sheets and GUI screens in one image", self.system)
+        self.assertIn("Read [image-production-system.md]", self.skill)
+
+
+class AssetPresentationPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.presentation = ASSET_PRESENTATION.read_text(encoding="utf-8") if ASSET_PRESENTATION.exists() else ""
+        cls.gates = QUALITY_GATES.read_text(encoding="utf-8")
+
+    def test_every_mod_asset_has_the_four_required_information_layers(self):
+        for phrase in (
+            "item or asset display name",
+            "gray and italic Mod display name",
+            "usage instruction",
+            "theme-consistent flavor text",
+        ):
+            self.assertIn(phrase, self.presentation)
+
+    def test_styling_supports_color_layout_and_chuunibyou_modes(self):
+        for phrase in (
+            "themed serious",
+            "light chuunibyou",
+            "full chuunibyou",
+            "color token",
+            "line order",
+            "wrap width",
+        ):
+            self.assertIn(phrase, self.presentation)
+
+    def test_random_text_uses_an_approved_pool_without_per_frame_flicker(self):
+        for phrase in (
+            "approved curated pool",
+            "4 to 8",
+            "stable_per_stack",
+            "must not change every rendered frame",
+        ):
+            self.assertIn(phrase, self.presentation)
+
+    def test_text_is_localizable_and_not_baked_into_final_textures(self):
+        for phrase in (
+            "translation_key",
+            "item.<mod_id>.<asset_id>",
+            "tooltip.<mod_id>.<asset_id>.use",
+            "runtime-rendered",
+            "Do not bake final UI text into model or GUI textures",
+        ):
+            self.assertIn(phrase, self.presentation)
+
+    def test_non_item_assets_use_an_appropriate_presentation_surface(self):
+        for phrase in (
+            "tooltip",
+            "gui_info_panel",
+            "hud",
+            "boss_bar",
+            "catalog",
+        ):
+            self.assertIn(phrase, self.presentation)
+
+    def test_main_flow_and_release_gate_require_validation(self):
+        self.assertIn("Read [asset-presentation.md]", self.skill)
+        self.assertIn("scripts/validate_asset_presentation.py", self.skill + self.gates)
+        self.assertTrue(ASSET_PRESENTATION_VALIDATOR.is_file())
 
 
 class ModelFirstRuntimeGatePolicyTests(unittest.TestCase):
@@ -388,8 +724,9 @@ class ConceptPromptPolicyTests(unittest.TestCase):
     def test_prompt_uses_model_sheet_views_and_cross_view_consistency(self):
         for phrase in (
             "Blockbench viewport-style model sheet",
-            "front, left side, back, and three-quarter",
+            "front, back, left side, right side, top, bottom, and three-quarter",
             "same proportions and part count across every view",
+            "action/keyframe sheet",
         ):
             self.assertIn(phrase, self.prompt)
 
@@ -593,14 +930,28 @@ class AssetWorkspacePolicyTests(unittest.TestCase):
         self.assertIn("Read [asset-workspace.md]", self.skill)
         self.assertIn("before concepts", self.skill)
 
-    def test_user_selects_windows_drive_and_parent_folder(self):
+    def test_user_only_selects_the_windows_drive(self):
         for phrase in (
-            "Ask which Windows drive and parent folder to use",
+            "Ask only for the Windows drive letter",
+            "Do not ask the user for a parent folder",
             "Do not choose a drive for the user",
-            "absolute proposed asset folder",
-            "explicit path approval",
+            "D:\\FJZM-Projects\\<project_id>",
         ):
             self.assertIn(phrase, self.workspace)
+
+    def test_one_large_project_folder_contains_mod_models_and_all_supporting_assets(self):
+        for folder in (
+            "mod/",
+            "assets/models/",
+            "design/image-rounds/",
+            "design/image-production-index.json",
+            "design/approved-previews/",
+            "gui/",
+            "contracts/",
+            "evidence/",
+            "backups/",
+        ):
+            self.assertIn(folder, self.workspace)
 
     def test_each_independent_model_has_one_isolated_folder(self):
         for phrase in (
@@ -613,7 +964,7 @@ class AssetWorkspacePolicyTests(unittest.TestCase):
 
     def test_folder_creation_does_not_bypass_model_approval(self):
         for phrase in (
-            "Create the dedicated folder after explicit path approval",
+            "Create the unified project folder only after explicit project-creation approval",
             "folder creation is not model-generation approval",
             "Before concept approval, store only consultation and concept materials",
             "Do not create `.bbmodel`, final textures, rigs, or animations before concept approval",
@@ -648,6 +999,7 @@ class AssetWorkspacePolicyTests(unittest.TestCase):
 
     def test_model_spec_records_approved_asset_workspace(self):
         for phrase in (
+            '"project_workspace"',
             '"asset_workspace"',
             '"drive"',
             '"approved_root"',

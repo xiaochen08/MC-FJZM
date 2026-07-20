@@ -4,7 +4,7 @@ Read this before concepts for every model. A user may choose the vanilla baselin
 
 ## Plain-language intake
 
-Ask these together with the other pre-concept questions, in Chinese when the user uses Chinese:
+Queue these with the other pre-concept decisions. Ask exactly one question per turn, in plain Chinese when the user uses Chinese. Do not show this whole list unless the user asks for the checklist:
 
 1. Must the model remain readable with shaders disabled? The required default is a **no-shader fallback**; exceptions are blocked because users may disable shaders or use an unsupported device.
 2. Is the target vanilla/common-safe rendering, **Iris or OptiFine**, or another exact loader? For a named target, lock Minecraft version plus loader name and version.

@@ -86,6 +86,52 @@ def validate_brief(brief: dict[str, Any]) -> dict[str, list[str]]:
         if not isinstance(target.get(field), str) or not target[field].strip():
             errors.append(f"target.{field} is required before project creation")
 
+    intake = brief.get("intake")
+    if not isinstance(intake, dict):
+        errors.append("Minecraft version must be the first Mod-creation question")
+    elif (
+        intake.get("first_question_id") != "minecraft_version"
+        or not isinstance(intake.get("minecraft_version_evidence"), str)
+        or not intake["minecraft_version_evidence"].strip()
+        or intake.get("questions_before_version") != []
+    ):
+        errors.append("Minecraft version must be the first Mod-creation question with no earlier questions")
+
+    encoding = brief.get("encoding_preflight")
+    if (
+        not isinstance(encoding, dict)
+        or encoding.get("severity") != "red"
+        or encoding.get("status") not in {"host_passed", "project_passed"}
+        or encoding.get("report_path") != "encoding-preflight.json"
+    ):
+        errors.append("a passing red UTF-8 host preflight in encoding-preflight.json is required")
+
+    java_policy = brief.get("java_policy")
+    if not isinstance(java_policy, dict):
+        errors.append("java_policy is required")
+    else:
+        required = java_policy.get("required_minimum_major")
+        installed = java_policy.get("installed_jdk_majors")
+        selected = java_policy.get("selected_gradle_runtime_major")
+        release = java_policy.get("compile_release_major")
+        if not isinstance(required, int) or required < 8:
+            errors.append("java_policy.required_minimum_major must be a valid Java major")
+        if not isinstance(installed, list) or not installed or not all(isinstance(item, int) for item in installed):
+            errors.append("java_policy.installed_jdk_majors must inventory installed Java majors")
+        elif isinstance(required, int) and max(installed) < required:
+            errors.append("installed Java is below the required minimum")
+        if not isinstance(selected, int) or (isinstance(required, int) and selected < required):
+            errors.append("selected Gradle runtime Java is below the required minimum")
+        elif isinstance(installed, list) and selected not in installed:
+            errors.append("selected Gradle runtime Java must reference an installed or approved side-by-side JDK")
+        if not isinstance(release, int) or (isinstance(required, int) and release < required):
+            errors.append("compile release must meet the required minimum")
+        if isinstance(selected, int) and isinstance(required, int) and selected > required:
+            if java_policy.get("newer_jdk_compatibility") != "verified":
+                errors.append("newer JDK compatibility must be verified for the pinned Gradle and loader toolchain")
+        if java_policy.get("keep_existing_jdks") is not True or java_policy.get("uninstall_or_downgrade_existing_jdk") is not False:
+            errors.append("existing JDKs must be preserved; uninstall or downgrade is forbidden")
+
     identity = brief.get("identity")
     if not isinstance(identity, dict):
         errors.append("identity object is required")

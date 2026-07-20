@@ -2,12 +2,15 @@
 
 这份文档不讲复杂名词，只说每一步要做什么、为什么要做。
 
-## v3 的两个 Skill 怎么配合
+## v4.2 的三个 Skill 怎么配合
 
-`$fjzm` 是项目负责人，`$fjzm-animation` 是动画专修。不是两个 Skill 同时随便改同一个模型，而是按顺序交接：
+`$fjzm` 是项目负责人，`$fjzm-texture` 是纹理专修，`$fjzm-animation` 是动画专修。不是三个 Skill 同时随便改同一个模型，而是按身份合同顺序交接：
 
 ~~~text
 $fjzm 锁定模型与用户批准
+  → 生成 texture-handoff.json
+  → $fjzm-texture 制作或返修贴图
+  → 返回 texture-result.json
   → 生成并验证 animation-handoff.json
   → $fjzm-animation 独占一个动画版本进行制作或返修
   → 返回 animation-result.json
@@ -89,14 +92,15 @@ Skill 还会在出 A/B/C 方案图之前问：
 ~~~text
 asset_id: crystal_tower
 中文名: 水晶能量塔
-保存位置: D:/MinecraftProjects/crystal_tower/
+工程根目录: D:/FJZM-Projects/energy_defense/
+模型目录: D:/FJZM-Projects/energy_defense/assets/models/crystal_tower__v1/
 ~~~
 
 后面的贴图、动画、粒子、音效和 Mod 文件都必须写同一个 asset_id。这样多模型同时制作时不会混。
 
 ## 第 5 步：说清楚外观
 
-Skill 会把问题分成几组，一次最多问三组，不会连续甩几十个小问题：
+Skill 内部会保存完整问题队列，但每次对话只问一个最关键的问题，不会一次甩出一整张专业表格：
 
 1. 用途、版本、体型和比例；
 2. 轮廓、材质、颜色和最重要的辨识点；
@@ -166,9 +170,9 @@ Skill 会保留原文件，同时复制出安全英文名：
 
 正式绑定前必须给用户看一张“事件—音效”对应表。顺序不对、模型身份不对，都不能继续。
 
-## 第 9 步：先出三套图
+## 第 9 步：按轮次生图并永久留档
 
-所有需求确认后，生成 A、B、C 三套不同方向的方案图。
+多资产项目先生成全资产总览，再生成主模型 A、B、C 三套不同方向。主题选定后，继续按单资产细化、完整视图、动作关键帧、GUI 主题和单屏状态逐轮确认。
 
 这些图必须看起来像 Blockbench 真能做出的结果：
 
@@ -177,6 +181,10 @@ Skill 会保留原文件，同时复制出安全英文名：
 - 不用大量电影级烟雾遮住结构；
 - 能看清关节、骨骼、转轴和部件间距；
 - 明确展示纹理像素感和实际模型比例。
+
+最终模型参考必须包含正、背、左、右、顶、底和三分之四视图；有动画时还要生成独立动作关键帧图。模型、动作和 GUI 不挤在同一张图里。
+
+每轮图片、提示词、负面提示词、审查、修改意见、批准证据和哈希都保存在 `design/image-rounds/`。下一次对话读取 `image-production-index.json` 继续未完成轮次，旧图不覆盖。
 
 ## 第 10 步：等用户明确批准
 

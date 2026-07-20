@@ -52,6 +52,16 @@ class AnimationSkillPolicyTests(unittest.TestCase):
         self.assertIn("explicit revision approval", self.skill)
         self.assertIn("Silence is not approval", self.skill)
 
+    def test_direct_conversation_asks_one_plain_numbered_question(self):
+        for phrase in (
+            "Ask exactly one user-facing question per turn",
+            "Use plain Chinese and an internet-friendly conversational tone",
+            "Offer 2 or 3 numbered choices",
+            "Keep the remaining question queue internal",
+            "回复序号就行，也可以直接说你的想法。",
+        ):
+            self.assertIn(phrase, self.skill)
+
     def test_actual_blockbench_and_interpolated_evidence_are_required(self):
         self.assertIn("actual Blockbench", self.skill)
         self.assertIn("0.05 seconds", self.skill)
