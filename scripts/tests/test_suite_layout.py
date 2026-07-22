@@ -10,24 +10,31 @@ class SuiteLayoutTests(unittest.TestCase):
     def test_plugin_manifest_registers_bundled_skills(self):
         manifest = json.loads((ROOT / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["name"], "fjzm-suite")
-        self.assertEqual(manifest["version"], "5.2.1")
+        self.assertEqual(manifest["version"], "5.3.0")
         self.assertEqual(manifest["skills"], "./skills/")
 
-    def test_main_and_three_specialist_skills_ship_together(self):
+    def test_main_and_four_specialist_skills_ship_together(self):
+        mod_skill_path = ROOT / "skills" / "fjzm-mod" / "SKILL.md"
+        self.assertTrue(mod_skill_path.is_file(), "fjzm-mod/SKILL.md must ship with the suite")
         main = (ROOT / "skills" / "fjzm" / "SKILL.md").read_text(encoding="utf-8")
         model = (ROOT / "skills" / "fjzm-model" / "SKILL.md").read_text(encoding="utf-8")
         texture = (ROOT / "skills" / "fjzm-texture" / "SKILL.md").read_text(encoding="utf-8")
         animation = (ROOT / "skills" / "fjzm-animation" / "SKILL.md").read_text(encoding="utf-8")
+        mod = mod_skill_path.read_text(encoding="utf-8")
         self.assertIn("name: fjzm", main)
         self.assertIn("**REQUIRED SUB-SKILL:** Use fjzm-model", main)
         self.assertIn("**REQUIRED SUB-SKILL:** Use fjzm-texture", main)
         self.assertIn("**REQUIRED SUB-SKILL:** Use fjzm-animation", main)
+        self.assertIn("**REQUIRED SUB-SKILL:** Use fjzm-mod", main)
         self.assertIn("name: fjzm-model", model)
         self.assertIn("name: fjzm-texture", texture)
         self.assertIn("name: fjzm-animation", animation)
+        self.assertIn("name: fjzm-mod", mod)
         self.assertTrue((ROOT / "skills" / "fjzm-model" / "scripts" / "validate_model_handoff.py").is_file())
         self.assertTrue((ROOT / "skills" / "fjzm-texture" / "scripts" / "validate_texture_handoff.py").is_file())
         self.assertTrue((ROOT / "skills" / "fjzm-animation" / "scripts" / "validate_animation_handoff.py").is_file())
+        self.assertTrue((ROOT / "skills" / "fjzm-mod" / "scripts" / "validate_gameplay_spec.py").is_file())
+        self.assertTrue((ROOT / "skills" / "fjzm-mod" / "scripts" / "validate_mod_handoff.py").is_file())
 
     def test_install_script_names_all_atomic_targets(self):
         installer = (ROOT / "Install-FJZMSuite.ps1").read_text(encoding="utf-8")
@@ -35,16 +42,18 @@ class SuiteLayoutTests(unittest.TestCase):
         self.assertIn("fjzm-model", installer)
         self.assertIn("fjzm-texture", installer)
         self.assertIn("fjzm-animation", installer)
+        self.assertIn("fjzm-mod", installer)
         self.assertIn("Refusing partial suite installation", installer)
         self.assertIn("SKILL.md", installer)
 
-    def test_v521_offline_suite_and_four_workbuddy_packages_are_published(self):
+    def test_v530_offline_suite_and_five_workbuddy_packages_are_published(self):
         expected = (
-            "fjzm-suite-v5.2.1.zip",
-            "fjzm-workbuddy-v5.2.1.zip",
-            "fjzm-model-workbuddy-v5.2.1.zip",
-            "fjzm-texture-workbuddy-v5.2.1.zip",
-            "fjzm-animation-workbuddy-v5.2.1.zip",
+            "fjzm-suite-v5.3.0.zip",
+            "fjzm-workbuddy-v5.3.0.zip",
+            "fjzm-model-workbuddy-v5.3.0.zip",
+            "fjzm-texture-workbuddy-v5.3.0.zip",
+            "fjzm-animation-workbuddy-v5.3.0.zip",
+            "fjzm-mod-workbuddy-v5.3.0.zip",
         )
         for filename in expected:
             with self.subTest(filename=filename):

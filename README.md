@@ -2,40 +2,41 @@
 
 > **让你不会 Blockbench，也能把脑子里的 Minecraft 模型一步步做出来。Enjoy! ✨**
 
-**正式名称：方界造模｜品牌缩写：FJZM｜主调用名：`$fjzm`｜模型专修：`$fjzm-model`｜纹理专修：`$fjzm-texture`｜动画专修：`$fjzm-animation`**
+**正式名称：方界造模｜品牌缩写：FJZM｜主调用名：`$fjzm`｜模型：`$fjzm-model`｜纹理：`$fjzm-texture`｜动画：`$fjzm-animation`｜Mod：`$fjzm-mod`**
 
-**当前版本：v5.2.1｜发布日期：2026-07-22**
+**当前版本：v5.3.0｜发布日期：2026-07-22**
 
 [🌐 打开可视化使用说明](https://xiaochen08.github.io/MC-FJZM/) · [📖 看详细教程](docs/USER_GUIDE.md) · [🧭 看完整流程](docs/WORKFLOW.md) · [🗓️ 查看更新日志](CHANGELOG.md)
 
-📦 [直接下载 FJZM v5.2.1 完整套件](dist/fjzm-suite-v5.2.1.zip)
+📦 [直接下载 FJZM v5.3.0 完整套件](dist/fjzm-suite-v5.3.0.zip)
 
-使用 WorkBuddy：下载同一个套件 ZIP，再按 [WorkBuddy 导入说明](docs/WORKBUDDY.md) 依次导入里面的四个技能包。
+使用 WorkBuddy：下载同一个套件 ZIP，再按 [WorkBuddy 导入说明](docs/WORKBUDDY.md) 依次导入里面的五个技能包。
 
 ---
 
 ## 一次安装完整套件
 
-v5.2.1 不是一个什么都抢着做的大 Skill，而是一套由主控统一调度的四技能系统：
+v5.3.0 不是一个什么都抢着做的大 Skill，而是一套由主控统一调度的五技能系统：
 
 - [`$fjzm`](skills/fjzm/SKILL.md)：需求、方案图、模型、贴图、光影、粒子、音效、Mod 接入和最终验收的总负责人；
 - [`$fjzm-model`](skills/fjzm-model/SKILL.md)：灰盒、几何、基础骨架、八视图叠图和模型还原度证据；
 - [`$fjzm-texture`](skills/fjzm-texture/SKILL.md)：UV、像素贴图、材质层次、眼睛、接缝和贴图返修；
 - [`$fjzm-animation`](skills/fjzm-animation/SKILL.md)：骨骼、动画生产、Blockbench 或 Blender/Epic Fight 后端、战斗动作编排、预览、诊断和返修。
+- [`$fjzm-mod`](skills/fjzm-mod/SKILL.md)：Forge、NeoForge、Fabric 工程，逐项玩法属性、注册、联动、网络、存档、构建和游戏内验证。
 
-主 Skill 负责统一审批和集成，三个工坊通过 ContractFlow v1 交接模型身份、哈希、骨架签名和写入权限。缺少任意工坊时，主流程会停止对应生产，避免串模型、覆盖文件或把不兼容结果硬接进 Mod。
+主 Skill 负责统一审批和集成，四个工坊通过 ContractFlow v1 交接模型身份、哈希、骨架签名、玩法规格和写入权限。缺少任意工坊时，主流程会停止对应生产，避免串模型、漏属性、覆盖文件或把不兼容结果硬接进 Mod。
 
-### 方法一：一条命令安装四个 Skill
+### 方法一：一条命令安装五个 Skill
 
 在 Windows PowerShell 中执行：
 
 ~~~powershell
-python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo xiaochen08/MC-FJZM --ref v5.2.1 --path skills/fjzm skills/fjzm-model skills/fjzm-texture skills/fjzm-animation
+python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo xiaochen08/MC-FJZM --ref v5.3.0 --path skills/fjzm skills/fjzm-model skills/fjzm-texture skills/fjzm-animation skills/fjzm-mod
 ~~~
 
 ### 方法二：一个 ZIP 离线安装
 
-下载仓库中的 [`dist/fjzm-suite-v5.2.1.zip`](dist/fjzm-suite-v5.2.1.zip)，解压后在该目录运行：
+下载仓库中的 [`dist/fjzm-suite-v5.3.0.zip`](dist/fjzm-suite-v5.3.0.zip)，解压后在该目录运行：
 
 ~~~powershell
 .\Install-FJZMSuite.ps1
@@ -47,7 +48,7 @@ python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\i
 .\Install-FJZMSuite.ps1 -BackupAndReplace
 ~~~
 
-脚本会先做完整性检查，再同时更新四个 Skill，并保留带日期的旧版备份；如果检测到不完整套件，脚本会拒绝继续，防止半套安装。
+脚本会先做完整性检查，再同时更新五个 Skill，并保留带日期的旧版备份；如果检测到不完整套件，脚本会拒绝继续，防止半套安装。
 
 安装完成后重启 Codex，然后直接说：
 
@@ -62,14 +63,26 @@ Skill 本体包含：
 
 | 目录 | 作用 |
 |---|---|
-| [.codex-plugin/plugin.json](.codex-plugin/plugin.json) | 同时注册四个 Skill 的插件清单 |
+| [.codex-plugin/plugin.json](.codex-plugin/plugin.json) | 同时注册五个 Skill 的插件清单 |
 | [skills/fjzm](skills/fjzm) | 方界造模主 Skill 完整本体 |
 | [skills/fjzm-model](skills/fjzm-model) | 模型工坊子 Skill 完整本体 |
 | [skills/fjzm-texture](skills/fjzm-texture) | 纹理工坊子 Skill 完整本体 |
 | [skills/fjzm-animation](skills/fjzm-animation) | 动画工坊子 Skill 完整本体 |
-| [dist/fjzm-suite-v5.2.1.zip](dist/fjzm-suite-v5.2.1.zip) | Codex 离线完整套件；其中也包含四个 WorkBuddy 单技能包 |
+| [skills/fjzm-mod](skills/fjzm-mod) | Mod 工坊子 Skill 完整本体 |
+| [dist/fjzm-suite-v5.3.0.zip](dist/fjzm-suite-v5.3.0.zip) | Codex 离线完整套件；其中也包含五个 WorkBuddy 单技能包 |
 | [Install-FJZMSuite.ps1](Install-FJZMSuite.ps1) | Windows 成套安装与安全更新脚本 |
 | [SKILL.md](SKILL.md) | 为旧安装方式保留的主 Skill 兼容入口 |
+
+## v5.3.0 重点更新：专业 Mod 工坊
+
+- 新增独立调用名 `$fjzm-mod`，主技能不再粗略兼任全部 Java Mod 工作；
+- 猫、宠物、怪物和 Boss 必须逐项确认生命、护甲、伤害、速度、感知、抗击退、碰撞箱、阵营、生成、掉落、持久化，以及驯服/繁殖是否适用；
+- 武器、工具、装备、方块机器、炮塔、投射物、GUI 和世界生成分别使用自己的属性清单；
+- 每轮只问一个大白话问题，可回复序号；推荐值只用于解释，不能静默写入；
+- `gameplay-spec.json` 必须带每个字段的用户证据，验证通过前禁止写玩法代码；
+- Mod 工程按 `project_bootstrap`、`gameplay_design`、`runtime_integration` 三阶段交接，避免“模型做完但无法落地”。
+
+[查看 v5.3.0 完整更新内容](CHANGELOG.md#530---2026-07-22)
 
 ## v5.2.1 重点修复：开场先问版本，再问 Mod 类型
 

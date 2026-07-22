@@ -1,11 +1,12 @@
 {
   "suite_name": "fjzm-suite",
-  "suite_version": "5.2.1",
+  "suite_version": "5.3.0",
   "protocol_version": "1.0",
   "skills": [
-    {"name": "fjzm", "version": "5.2.1", "capabilities": ["orchestration", "approval", "integration", "release", "opening_version_loader_gate", "animation_backend_routing", "combat_runtime_integration"]},
-    {"name": "fjzm-model", "version": "5.2.1", "capabilities": ["geometry", "base_rig_interface", "fidelity_comparison"]},
-    {"name": "fjzm-texture", "version": "5.2.1", "capabilities": ["uv", "texture", "material_maps"]},
-    {"name": "fjzm-animation", "version": "5.2.1", "capabilities": ["animation", "event_timing", "motion_validation", "blockbench_backend", "blender_epicfight_backend", "rig_retargeting", "combat_behavior_orchestration"]}
+    {"name": "fjzm", "version": "5.3.0", "capabilities": ["orchestration", "approval", "integration", "release", "opening_version_loader_gate", "animation_backend_routing", "combat_runtime_integration", "mod_workshop_routing"]},
+    {"name": "fjzm-model", "version": "5.3.0", "capabilities": ["geometry", "base_rig_interface", "fidelity_comparison"]},
+    {"name": "fjzm-texture", "version": "5.3.0", "capabilities": ["uv", "texture", "material_maps"]},
+    {"name": "fjzm-animation", "version": "5.3.0", "capabilities": ["animation", "event_timing", "motion_validation", "blockbench_backend", "blender_epicfight_backend", "rig_retargeting", "combat_behavior_orchestration"]},
+    {"name": "fjzm-mod", "version": "5.3.0", "capabilities": ["mod_project", "gameplay_attributes", "runtime_integration"]}
   ]
 }

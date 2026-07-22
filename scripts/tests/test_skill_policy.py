@@ -169,6 +169,24 @@ class TextureSubskillBindingPolicyTests(unittest.TestCase):
         self.assertIn("Do not qualify shaders, bundle, or release the asset before the texture result returns", self.gates)
 
 
+class ModSubskillBindingPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+
+    def test_mod_project_and_runtime_work_require_the_specialist(self):
+        self.assertIn("**REQUIRED SUB-SKILL:** Use fjzm-mod", self.skill)
+        self.assertIn("If `fjzm-mod` is unavailable, stop Mod production", self.skill)
+
+    def test_gameplay_attributes_are_validated_before_code(self):
+        for phrase in ("gameplay-spec.json", "validate_gameplay_spec.py", "field-level evidence", "write no gameplay code"):
+            self.assertIn(phrase, self.skill)
+
+    def test_main_creates_staged_mod_handoffs_and_validates_results(self):
+        for phrase in ("mod-handoff.json", "project_bootstrap", "gameplay_design", "runtime_integration", "mod-result.json"):
+            self.assertIn(phrase, self.skill)
+
+
 class ApprovalGatePolicyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

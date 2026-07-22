@@ -1,7 +1,7 @@
 {
   "name": "fjzm-suite",
-  "version": "5.2.1",
-  "description": "方界造模主控、模型工坊、纹理工坊与带战斗导演层的双后端动画工坊组成的 Minecraft Mod 高还原套件。",
+  "version": "5.3.0",
+  "description": "方界造模主控、模型、纹理、动画与专业 Mod 工坊组成的 Minecraft Java Mod 高还原套件。",
   "author": {
     "name": "xiaochen08",
     "url": "https://github.com/xiaochen08"
@@ -11,17 +11,18 @@
   "keywords": ["minecraft", "blockbench", "modeling", "fidelity", "animation", "texture", "gui", "mod", "utf-8"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "方界造模 FJZM 四技能套件",
+    "displayName": "方界造模 FJZM 五技能套件",
     "shortDescription": "用合同化分工完成 Minecraft Mod、模型、贴图、动画和验证。",
-    "longDescription": "FJZM v5.2.1 由主控、模型工坊、纹理工坊和动画工坊组成。主控固定先确认 Minecraft 版本，再确认 Mod 类型/加载器；这两项只记录需求，绝不自动授权创建、下载或安装。动画工坊支持 Blockbench 与 Blender/Epic Fight 两条路线，并通过 ContractFlow v1 锁定模型身份、骨架、文件哈希、写入范围和依赖顺序。",
+    "longDescription": "FJZM v5.3.0 由主控、模型、纹理、动画和 Mod 工坊组成。Mod 工坊会按实体、武器、机器、投射物、GUI 或世界生成类型逐项询问基础属性；没有用户证据不得猜默认值或写玩法代码。所有工坊通过 ContractFlow v1 锁定资产身份、哈希、写入范围和依赖顺序。",
     "developerName": "xiaochen08",
     "category": "Developer Tools",
-    "capabilities": ["ContractFlow orchestration", "Minecraft Mod bootstrap", "UTF-8 preflight", "Blockbench geometry fidelity", "Eight-view overlay comparison", "Pixel texture production", "Blockbench animation backend", "Blender and Epic Fight animation backend", "Combat behavior orchestration", "Weighted combo selection", "Rig retargeting", "Minecraft runtime validation", "Shader evidence"],
+    "capabilities": ["ContractFlow orchestration", "Minecraft Mod bootstrap", "Type-specific gameplay attributes", "Forge NeoForge Fabric adapters", "Runtime asset binding", "UTF-8 preflight", "Blockbench geometry fidelity", "Eight-view overlay comparison", "Pixel texture production", "Blockbench animation backend", "Blender and Epic Fight animation backend", "Combat behavior orchestration", "Minecraft runtime validation", "Shader evidence"],
     "defaultPrompt": [
       "使用 $fjzm 创建 Minecraft Mod 与模型；一次只问一个简单问题，第一问确认 Minecraft 版本，第二问确认 Mod 类型/加载器，未获得单独执行批准前不要创建、下载或安装。",
       "使用 $fjzm-model 按主技能批准的参考图制作高还原 Blockbench 几何和八视图对比证据。",
       "使用 $fjzm-texture 在冻结几何上制作最终 UV、高质量像素贴图和材质图。",
-      "使用 $fjzm-animation 在冻结模型接口上选择 Blockbench 或 Blender/Epic Fight 后端制作、检查和优化动画；战斗资产同时生成并验证战斗编排合同。"
+      "使用 $fjzm-animation 在冻结模型接口上选择 Blockbench 或 Blender/Epic Fight 后端制作、检查和优化动画；战斗资产同时生成并验证战斗编排合同。",
+      "使用 $fjzm-mod 逐项确认实体、物品、机器、GUI 等玩法属性，再创建工程、绑定资产、构建并进游戏验证。"
     ],
     "brandColor": "#00D8FF"
   }

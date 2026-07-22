@@ -13,13 +13,14 @@ class SuiteCompatibilityTests(unittest.TestCase):
     def manifest(self):
         return {
             "suite_name": "fjzm-suite",
-            "suite_version": "5.2.1",
+            "suite_version": "5.3.0",
             "protocol_version": "1.0",
             "skills": [
-                {"name": "fjzm", "version": "5.2.1", "capabilities": ["orchestration", "combat_runtime_integration"]},
-                {"name": "fjzm-model", "version": "5.2.1", "capabilities": ["geometry"]},
-                {"name": "fjzm-texture", "version": "5.2.1", "capabilities": ["texture"]},
-                {"name": "fjzm-animation", "version": "5.2.1", "capabilities": ["animation", "blender_epicfight_backend", "combat_behavior_orchestration"]},
+                {"name": "fjzm", "version": "5.3.0", "capabilities": ["orchestration", "combat_runtime_integration", "mod_workshop_routing"]},
+                {"name": "fjzm-model", "version": "5.3.0", "capabilities": ["geometry"]},
+                {"name": "fjzm-texture", "version": "5.3.0", "capabilities": ["texture"]},
+                {"name": "fjzm-animation", "version": "5.3.0", "capabilities": ["animation", "blender_epicfight_backend", "combat_behavior_orchestration"]},
+                {"name": "fjzm-mod", "version": "5.3.0", "capabilities": ["mod_project", "gameplay_attributes", "runtime_integration"]},
             ],
         }
 
@@ -34,7 +35,7 @@ class SuiteCompatibilityTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-    def test_complete_v5_2_suite_passes(self):
+    def test_complete_v5_3_suite_passes(self):
         result = self.run_validator(self.manifest())
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
@@ -44,6 +45,13 @@ class SuiteCompatibilityTests(unittest.TestCase):
         result = self.run_validator(payload)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("fjzm-model", result.stdout + result.stderr)
+
+    def test_missing_mod_workshop_is_rejected(self):
+        payload = self.manifest()
+        payload["skills"] = [s for s in payload["skills"] if s["name"] != "fjzm-mod"]
+        result = self.run_validator(payload)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("fjzm-mod", result.stdout + result.stderr)
 
     def test_protocol_mismatch_is_rejected(self):
         payload = self.manifest()

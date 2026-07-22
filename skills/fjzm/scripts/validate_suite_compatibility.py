@@ -5,10 +5,11 @@ from pathlib import Path
 
 
 REQUIRED = {
-    "fjzm": {"orchestration", "combat_runtime_integration"},
+    "fjzm": {"orchestration", "combat_runtime_integration", "mod_workshop_routing"},
     "fjzm-model": {"geometry"},
     "fjzm-texture": {"texture"},
     "fjzm-animation": {"animation", "blender_epicfight_backend", "combat_behavior_orchestration"},
+    "fjzm-mod": {"mod_project", "gameplay_attributes", "runtime_integration"},
 }
 
 
@@ -20,8 +21,8 @@ def load_json(path):
 
 
 def validate(data):
-    if data.get("suite_name") != "fjzm-suite" or data.get("suite_version") != "5.2.1":
-        raise ValueError("suite name/version must be fjzm-suite 5.2.1")
+    if data.get("suite_name") != "fjzm-suite" or data.get("suite_version") != "5.3.0":
+        raise ValueError("suite name/version must be fjzm-suite 5.3.0")
     if data.get("protocol_version") != "1.0":
         raise ValueError("protocol version must be ContractFlow 1.0")
     skills = data.get("skills")
@@ -36,7 +37,7 @@ def validate(data):
     capability_errors = []
     for name, capabilities in REQUIRED.items():
         skill = by_name[name]
-        if skill.get("version") != "5.2.1":
+        if skill.get("version") != "5.3.0":
             raise ValueError(f"skill version mismatch: {name}")
         available = set(skill.get("capabilities", []))
         missing_capabilities = capabilities - available
@@ -47,7 +48,7 @@ def validate(data):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Validate FJZM v5.2 suite capabilities")
+    parser = argparse.ArgumentParser(description="Validate FJZM v5.3 suite capabilities")
     parser.add_argument("manifest", type=Path)
     args = parser.parse_args()
     try:
@@ -55,7 +56,7 @@ def main():
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
-    print("OK: FJZM v5.2 four-skill capability index is compatible")
+    print("OK: FJZM v5.3 five-skill capability index is compatible")
     return 0
 
 

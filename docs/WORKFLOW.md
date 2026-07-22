@@ -2,9 +2,9 @@
 
 这份文档不讲复杂名词，只说每一步要做什么、为什么要做。
 
-## v5.2 的四个 Skill 怎么配合
+## v5.3 的五个 Skill 怎么配合
 
-`$fjzm` 是项目负责人，`$fjzm-model` 是模型几何专修，`$fjzm-texture` 是纹理专修，`$fjzm-animation` 是动画与战斗编排专修。不是四个 Skill 同时随便改同一个模型，而是由主控按 ContractFlow v1 顺序交接：
+`$fjzm` 是项目负责人，`$fjzm-model` 是模型几何专修，`$fjzm-texture` 是纹理专修，`$fjzm-animation` 是动画与战斗编排专修，`$fjzm-mod` 是 Java Mod 工程与玩法落地专修。不是五个 Skill 同时随便改同一批文件，而是由主控按 ContractFlow v1 顺序交接：
 
 ~~~text
 $fjzm 锁定模型与用户批准
@@ -16,6 +16,7 @@ $fjzm 锁定模型与用户批准
   → 返回 texture-result.json
   → 生成并验证 animation-handoff.json
   → $fjzm-animation 独占一个动画版本进行制作或返修
+  → $fjzm-mod 按批准属性绑定注册、行为、网络、存档和资源
   → 返回 animation-result.json
   → $fjzm 核对结果并重新绑定粒子、音效、碰撞、投射物与 Mod
 ~~~
