@@ -61,6 +61,10 @@ class ModProjectBriefValidatorTests(unittest.TestCase):
                 "first_question_id": "minecraft_version",
                 "minecraft_version_evidence": "1.21.1",
                 "questions_before_version": [],
+                "second_question_id": "mod_loader",
+                "loader_evidence": "fabric",
+                "questions_between_version_and_loader": [],
+                "version_loader_authority": "intake_only",
             },
             "java_policy": {
                 "required_minimum_major": 21,
@@ -124,6 +128,19 @@ class ModProjectBriefValidatorTests(unittest.TestCase):
         result = self.validator.validate_brief(brief)
         self.assertTrue(any("Minecraft version must be the first Mod-creation question" in error for error in result["errors"]))
 
+    def test_rejects_any_question_between_version_and_loader(self):
+        brief = deepcopy(self.complete)
+        brief["intake"]["second_question_id"] = "project_route"
+        brief["intake"]["questions_between_version_and_loader"] = ["project_route", "drive"]
+        result = self.validator.validate_brief(brief)
+        self.assertTrue(any("Mod type/loader must be the second intake question" in error for error in result["errors"]))
+
+    def test_rejects_treating_version_and_loader_as_creation_authority(self):
+        brief = deepcopy(self.complete)
+        brief["intake"]["version_loader_authority"] = "creation_approved"
+        result = self.validator.validate_brief(brief)
+        self.assertTrue(any("version and loader answers are intake evidence only" in error for error in result["errors"]))
+
     def test_rejects_missing_red_utf8_host_preflight(self):
         brief = deepcopy(self.complete)
         brief["encoding_preflight"]["status"] = "pending"
@@ -167,6 +184,7 @@ class ModProjectBriefValidatorTests(unittest.TestCase):
                 "status": "approved",
                 "evidence": "用户接受运行时导出延期且后续可能需要适配",
             },
+            "intake": deepcopy(self.complete["intake"]),
         }
         result = self.validator.validate_brief(brief)
         self.assertEqual(result["errors"], [])
@@ -185,6 +203,7 @@ class ModProjectBriefValidatorTests(unittest.TestCase):
             "restrictions": ["no runtime integration claim"],
             "runtime_risk": "high",
             "production_ceiling": "runtime_neutral_source",
+            "intake": deepcopy(self.complete["intake"]),
         }
         result = self.validator.validate_brief(brief)
         self.assertTrue(any("validated runtime-contract.json" in error for error in result["errors"]))

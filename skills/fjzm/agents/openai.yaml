@@ -1,4 +1,4 @@
 interface:
   display_name: "方界造模 FJZM"
   short_description: "Minecraft Mod、模型、GUI、动画与资源全流程生产"
-  default_prompt: "使用 $fjzm 为我制作 Minecraft Mod 与模型：先问 Minecraft 版本并通过 UTF-8 红色门禁，再确认资产、三选一概念图和动画路线；战斗资产还要建立武器、距离、连段、分支、打断与阶段规则。"
+  default_prompt: "使用 $fjzm 为我制作 Minecraft Mod 与模型：第一问只确认 Minecraft 版本，第二问只确认 Mod 类型/加载器；这两个回答不代表创建、下载或安装授权，之后先通过 UTF-8 红色门禁，再按单问题流程继续。"

@@ -10,7 +10,7 @@ class SuiteLayoutTests(unittest.TestCase):
     def test_plugin_manifest_registers_bundled_skills(self):
         manifest = json.loads((ROOT / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["name"], "fjzm-suite")
-        self.assertEqual(manifest["version"], "5.2.0")
+        self.assertEqual(manifest["version"], "5.2.1")
         self.assertEqual(manifest["skills"], "./skills/")
 
     def test_main_and_three_specialist_skills_ship_together(self):
@@ -38,13 +38,13 @@ class SuiteLayoutTests(unittest.TestCase):
         self.assertIn("Refusing partial suite installation", installer)
         self.assertIn("SKILL.md", installer)
 
-    def test_v520_offline_suite_and_four_workbuddy_packages_are_published(self):
+    def test_v521_offline_suite_and_four_workbuddy_packages_are_published(self):
         expected = (
-            "fjzm-suite-v5.2.0.zip",
-            "fjzm-workbuddy-v5.2.0.zip",
-            "fjzm-model-workbuddy-v5.2.0.zip",
-            "fjzm-texture-workbuddy-v5.2.0.zip",
-            "fjzm-animation-workbuddy-v5.2.0.zip",
+            "fjzm-suite-v5.2.1.zip",
+            "fjzm-workbuddy-v5.2.1.zip",
+            "fjzm-model-workbuddy-v5.2.1.zip",
+            "fjzm-texture-workbuddy-v5.2.1.zip",
+            "fjzm-animation-workbuddy-v5.2.1.zip",
         )
         for filename in expected:
             with self.subTest(filename=filename):

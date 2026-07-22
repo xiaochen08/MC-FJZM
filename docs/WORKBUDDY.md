@@ -1,11 +1,11 @@
 # WorkBuddy 导入说明
 
-[`fjzm-suite-v5.2.0.zip`](../dist/fjzm-suite-v5.2.0.zip) 是完整下载包，里面已经同时带上四个 WorkBuddy 导入文件：
+[`fjzm-suite-v5.2.1.zip`](../dist/fjzm-suite-v5.2.1.zip) 是完整下载包，里面已经同时带上四个 WorkBuddy 导入文件：
 
-1. `workbuddy/fjzm-workbuddy-v5.2.0.zip`
-2. `workbuddy/fjzm-model-workbuddy-v5.2.0.zip`
-3. `workbuddy/fjzm-texture-workbuddy-v5.2.0.zip`
-4. `workbuddy/fjzm-animation-workbuddy-v5.2.0.zip`
+1. `workbuddy/fjzm-workbuddy-v5.2.1.zip`
+2. `workbuddy/fjzm-model-workbuddy-v5.2.1.zip`
+3. `workbuddy/fjzm-texture-workbuddy-v5.2.1.zip`
+4. `workbuddy/fjzm-animation-workbuddy-v5.2.1.zip`
 
 请在 WorkBuddy 的“导入技能”窗口依次拖入这四个 ZIP。每个子 ZIP 的根目录都直接包含 `SKILL.md`，符合单技能导入结构。
 

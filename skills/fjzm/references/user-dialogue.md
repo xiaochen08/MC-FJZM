@@ -75,11 +75,13 @@ answer_status
 answer_evidence
 ```
 
-Ask the highest-impact unresolved decision next. The normal order is project route, model category, target game/runtime, workspace, visual identity, texture level, animation, effects, damage/destruction, shader target, and final approvals. Reorder when the user's request makes another decision the real blocker, but still ask only one question.
+The global opening order is fixed: Minecraft version, Mod type/loader, then project status and route. It cannot be reordered by model urgency, a reference image, an existing design, or a request to “start now.” Until both are locked, ask no project-status, route, Java, drive, folder, model, GUI, asset, image, or production question.
 
-### Critical Mod-creation override
+After the two-question opening gate, ask the highest-impact unresolved decision next. The normal remaining order is project status/route, model category, workspace, visual identity, texture level, animation, effects, damage/destruction, shader target, and final approvals. Reorder only this remaining queue when the user's request makes another decision the real blocker.
 
-After the user selects `create_mod_first`, ask the Minecraft version before every other Mod, workspace, model, or GUI detail. Use this exact plain-language question shape:
+### Mandatory opening question 1: Minecraft version
+
+The first user-facing question must resolve the target Minecraft version. Use this exact plain-language question shape:
 
 ```text
 先确认最关键的一项：你要做哪个 Minecraft 版本的 Mod？版本会直接决定加载器、Java 和后面的项目结构，先定错了很容易整套返工。
@@ -90,7 +92,26 @@ After the user selects `create_mod_first`, ask the Minecraft version before ever
 回复序号就行，也可以直接说你的想法。
 ```
 
-Do not ask the drive, loader, Java version, model category, GUI, or folder name in this same turn. When the user already supplied an exact Minecraft version, record it and continue to the next unresolved decision without repeating the question.
+Do not ask the loader, project status, route, drive, Java version, model category, GUI, or folder name in this same turn. When the user already supplied an exact Minecraft version, record it and continue to the loader decision without repeating the question.
+
+### Mandatory opening question 2: Mod type/loader
+
+The second user-facing question must resolve the Mod type/loader. Use this exact plain-language question shape:
+
+```text
+版本记下了。现在只确认 Mod 类型，也就是准备用 Forge、NeoForge 还是 Fabric。它会决定后面用哪套工程和依赖，选错了也会返工。
+
+1. 我知道类型（推荐）——直接回复 Forge、NeoForge 或 Fabric。
+2. 我不确定——你之后按已确认的版本和我需要的功能帮我查。
+
+回复序号就行，也可以直接说你的想法。
+```
+
+Do not ask project status, route, Java, drive, folder, model, GUI, asset, or image questions in this turn. Do not claim that a loader supports the chosen version until official primary sources are checked at execution time. If the user already supplied the loader, record it and continue without repeating the question.
+
+### Intake is not execution authority
+
+A version or loader answer is intake evidence only. It never authorizes project creation, downloads, installation, file changes, or app control. If the user says the value is an example or demonstration, keep it only as conversation context unless the user separately asks to use it as the real project target. Even a direct answer such as `1.20.1 Forge` still needs a later project-route choice and explicit creation approval before any production action.
 
 ## Approval turns
 

@@ -80,7 +80,7 @@ try {
     }
     Remove-Item -LiteralPath $stage
 
-    Write-Host 'Installed FJZM suite 5.2.0:'
+    Write-Host 'Installed FJZM suite 5.2.1:'
     foreach ($name in $skillNames) {
         Write-Host "  $($targetPaths[$name])"
     }

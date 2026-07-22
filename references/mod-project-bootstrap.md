@@ -2,6 +2,8 @@
 
 ## Opening route
 
+Enter this route only after the main skill's global opening gate has locked the Minecraft version first and the Mod type/loader second. Until both are locked, ask no project-status, route, Java, drive, folder, model, GUI, asset, image, or production question.
+
 Ask whether the user has an authorized Mod project and its path before asking the model category.
 
 - Existing project: do not create another one; use `scripts/inspect_runtime_project.py` and preserve its hashes.
@@ -11,11 +13,13 @@ Ask whether the user has an authorized Mod project and its path before asking th
 
 Do not continue to the model category until the project route is explicitly selected. Do not auto-resolve, recommend as if selected, or treat silence, urgency, model approval, or “decide for me” as the route choice. Record the user's verbatim choice as `route_choice_evidence`.
 
-## Red priority: Minecraft version is first
+## Red priority: global version-loader opening gate
 
-Immediately after `create_mod_first` is selected, the first question must ask for the target Minecraft version. No loader, Java, workspace, model, GUI, or asset question may appear before it. Ask exactly: `你要做哪个 Minecraft 版本的 Mod？` and explain in plain Chinese that this controls the loader, build tool, Java floor, mappings, and project template. Ask no second decision in the same turn.
+The first question must ask for the target Minecraft version. The second question must ask for the Mod type/loader. No project status, route, Java, workspace, model, GUI, asset, image, or production question may appear before both are locked. Ask no second decision in either turn.
 
-If the user already supplied an exact version, record that evidence instead of asking again. If the user does not know, enter the unknown-version route below; do not silently choose a version.
+If the user already supplied an exact version or loader, record that evidence instead of asking again. If either is unknown, keep it unresolved and use the documented assistance route; do not silently choose it.
+
+A version or loader answer is intake evidence only and never authorizes project creation, downloads, installation, file changes, or app control. Treat an example or demonstration as non-production context. Never create a project from those answers; require a later explicit project route and separate creation approval.
 
 Never create a project from silence, urgency, delegated choice, or model approval. Project creation requires separate explicit project-creation approval and an absolute destination path that does not already exist.
 
@@ -44,7 +48,8 @@ Create `mod-project-brief.json` with:
 - official compatibility evidence;
 - verbatim creation approval;
 - Windows toolchain policy.
-- proof that `minecraft_version` was the first Mod-creation question;
+- proof that `minecraft_version` was the first intake question and `mod_loader` was the second, with no questions between them;
+- proof that version and loader answers were recorded as `intake_only`, never as creation authority;
 - unified project drive/root generated from the drive letter;
 - Java minimum, installed JDK inventory, selected Gradle runtime JDK, compile release, and compatibility evidence;
 - red `encoding-preflight.json` host-gate status.

@@ -48,6 +48,28 @@ def validate_brief(brief: dict[str, Any]) -> dict[str, list[str]]:
     elif route_choice != ROUTE_BY_STATUS[status]:
         errors.append("route_choice does not match project_status")
 
+    intake = brief.get("intake")
+    if not isinstance(intake, dict):
+        errors.append("Minecraft version must be the first intake question")
+        errors.append("Mod type/loader must be the second intake question")
+    else:
+        if (
+            intake.get("first_question_id") != "minecraft_version"
+            or not isinstance(intake.get("minecraft_version_evidence"), str)
+            or not intake["minecraft_version_evidence"].strip()
+            or intake.get("questions_before_version") != []
+        ):
+            errors.append("Minecraft version must be the first Mod-creation question with no earlier questions")
+        if (
+            intake.get("second_question_id") != "mod_loader"
+            or not isinstance(intake.get("loader_evidence"), str)
+            or not intake["loader_evidence"].strip()
+            or intake.get("questions_between_version_and_loader") != []
+        ):
+            errors.append("Mod type/loader must be the second intake question with no question between it and Minecraft version")
+        if intake.get("version_loader_authority") != "intake_only":
+            errors.append("version and loader answers are intake evidence only and cannot authorize creation")
+
     if status == "runtime_deferred":
         if not isinstance(brief.get("deferred_reason"), str) or not brief["deferred_reason"].strip():
             errors.append("runtime_deferred requires deferred_reason")
@@ -85,17 +107,6 @@ def validate_brief(brief: dict[str, Any]) -> dict[str, list[str]]:
     for field in CREATE_TARGET_FIELDS:
         if not isinstance(target.get(field), str) or not target[field].strip():
             errors.append(f"target.{field} is required before project creation")
-
-    intake = brief.get("intake")
-    if not isinstance(intake, dict):
-        errors.append("Minecraft version must be the first Mod-creation question")
-    elif (
-        intake.get("first_question_id") != "minecraft_version"
-        or not isinstance(intake.get("minecraft_version_evidence"), str)
-        or not intake["minecraft_version_evidence"].strip()
-        or intake.get("questions_before_version") != []
-    ):
-        errors.append("Minecraft version must be the first Mod-creation question with no earlier questions")
 
     encoding = brief.get("encoding_preflight")
     if (

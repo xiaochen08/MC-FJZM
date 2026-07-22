@@ -20,8 +20,8 @@ def load_json(path):
 
 
 def validate(data):
-    if data.get("suite_name") != "fjzm-suite" or data.get("suite_version") != "5.2.0":
-        raise ValueError("suite name/version must be fjzm-suite 5.2.0")
+    if data.get("suite_name") != "fjzm-suite" or data.get("suite_version") != "5.2.1":
+        raise ValueError("suite name/version must be fjzm-suite 5.2.1")
     if data.get("protocol_version") != "1.0":
         raise ValueError("protocol version must be ContractFlow 1.0")
     skills = data.get("skills")
@@ -36,7 +36,7 @@ def validate(data):
     capability_errors = []
     for name, capabilities in REQUIRED.items():
         skill = by_name[name]
-        if skill.get("version") != "5.2.0":
+        if skill.get("version") != "5.2.1":
             raise ValueError(f"skill version mismatch: {name}")
         available = set(skill.get("capabilities", []))
         missing_capabilities = capabilities - available

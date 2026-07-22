@@ -54,10 +54,11 @@ class OfficialIdentityPolicyTests(unittest.TestCase):
         self.assertIn("$fjzm", self.agent)
         self.assertNotIn("$create-blockbench-minecraft-models", self.agent)
 
-    def test_default_prompt_reflects_version_first_and_utf8_red_gate(self):
-        self.assertIn("先问 Minecraft 版本", self.agent)
+    def test_default_prompt_reflects_two_question_opening_and_utf8_red_gate(self):
+        self.assertIn("第一问只确认 Minecraft 版本", self.agent)
+        self.assertIn("第二问只确认 Mod 类型/加载器", self.agent)
+        self.assertIn("不代表创建、下载或安装授权", self.agent)
         self.assertIn("UTF-8 红色门禁", self.agent)
-        self.assertIn("GUI", self.agent)
 
 
 class AnimationSubskillBindingPolicyTests(unittest.TestCase):
@@ -380,11 +381,11 @@ class ModProjectBootstrapPolicyTests(unittest.TestCase):
         for phrase in ("project_status", "destination_path", "compatibility_evidence", "runtime_deferred"):
             self.assertIn(phrase, self.brief)
 
-    def test_create_mod_route_asks_minecraft_version_before_every_other_detail(self):
+    def test_global_intake_asks_version_then_loader_before_every_other_detail(self):
         for phrase in (
-            "the first question must ask for the target Minecraft version",
-            "No loader, Java, workspace, model, GUI, or asset question may appear before it",
-            "你要做哪个 Minecraft 版本的 Mod？",
+            "The first question must ask for the target Minecraft version",
+            "The second question must ask for the Mod type/loader",
+            "No project status, route, Java, workspace, model, GUI, asset, image, or production question may appear before both are locked",
         ):
             self.assertIn(phrase, self.bootstrap + self.dialogue if hasattr(self, "dialogue") else self.bootstrap)
 
@@ -401,6 +402,40 @@ class ModProjectBootstrapPolicyTests(unittest.TestCase):
     def test_java_policy_links_primary_gradle_compatibility_sources(self):
         self.assertIn("https://docs.gradle.org/current/userguide/compatibility.html", self.bootstrap)
         self.assertIn("https://docs.gradle.org/current/userguide/toolchains.html", self.bootstrap)
+
+
+class OpeningVersionLoaderGatePolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.skill = SKILL_MD.read_text(encoding="utf-8")
+        cls.dialogue = USER_DIALOGUE.read_text(encoding="utf-8")
+        cls.bootstrap = MOD_PROJECT_BOOTSTRAP.read_text(encoding="utf-8")
+        cls.all_text = cls.skill + cls.dialogue + cls.bootstrap
+
+    def test_minecraft_version_is_the_first_global_intake_question(self):
+        phrase = "the first user-facing question must resolve the target Minecraft version"
+        self.assertIn(phrase, self.skill)
+        self.assertLess(self.skill.index(phrase), self.skill.index("Ask whether an authorized Minecraft project exists"))
+
+    def test_mod_loader_is_the_second_global_intake_question(self):
+        phrase = "the second user-facing question must resolve the Mod type/loader"
+        self.assertIn(phrase, self.skill)
+        self.assertLess(self.skill.index(phrase), self.skill.index("Ask whether an authorized Minecraft project exists"))
+        self.assertIn("版本记下了。现在只确认 Mod 类型", self.dialogue)
+
+    def test_every_other_question_waits_until_both_opening_answers_are_locked(self):
+        self.assertIn(
+            "Until both are locked, ask no project-status, route, Java, drive, folder, model, GUI, asset, image, or production question",
+            self.all_text,
+        )
+
+    def test_version_and_loader_answers_never_authorize_execution(self):
+        for phrase in (
+            "A version or loader answer is intake evidence only",
+            "never authorizes project creation, downloads, installation, file changes, or app control",
+            "example or demonstration",
+        ):
+            self.assertIn(phrase, self.all_text)
 
 
 class WindowsUtf8RedGatePolicyTests(unittest.TestCase):

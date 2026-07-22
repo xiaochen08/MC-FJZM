@@ -13,13 +13,13 @@ class SuiteCompatibilityTests(unittest.TestCase):
     def manifest(self):
         return {
             "suite_name": "fjzm-suite",
-            "suite_version": "5.2.0",
+            "suite_version": "5.2.1",
             "protocol_version": "1.0",
             "skills": [
-                {"name": "fjzm", "version": "5.2.0", "capabilities": ["orchestration", "combat_runtime_integration"]},
-                {"name": "fjzm-model", "version": "5.2.0", "capabilities": ["geometry"]},
-                {"name": "fjzm-texture", "version": "5.2.0", "capabilities": ["texture"]},
-                {"name": "fjzm-animation", "version": "5.2.0", "capabilities": ["animation", "blender_epicfight_backend", "combat_behavior_orchestration"]},
+                {"name": "fjzm", "version": "5.2.1", "capabilities": ["orchestration", "combat_runtime_integration"]},
+                {"name": "fjzm-model", "version": "5.2.1", "capabilities": ["geometry"]},
+                {"name": "fjzm-texture", "version": "5.2.1", "capabilities": ["texture"]},
+                {"name": "fjzm-animation", "version": "5.2.1", "capabilities": ["animation", "blender_epicfight_backend", "combat_behavior_orchestration"]},
             ],
         }
 
